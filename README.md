@@ -1,1 +1,1 @@
-<h2>Sudoku solving multi platform app</h2>
+<h2>Sudoku solving multi platform app...</h2>
