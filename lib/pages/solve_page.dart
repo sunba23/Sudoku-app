@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SolvePage extends StatefulWidget {
@@ -24,7 +25,13 @@ class _SolvePageState extends State<SolvePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('This sudoku is being solved:'),
-            Image.file(widget.sudokuImage),
+            kIsWeb
+                ? Image.network(widget.sudokuImage.path) //web specific
+                : defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS
+                    ? Image.file(widget.sudokuImage) //mobile specific
+                    : defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.fuchsia
+                        ? Image.file(widget.sudokuImage) //desktop specific
+                        : const Text('Unsupported platform'),
           ],
         )
       ),

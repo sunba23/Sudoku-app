@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'solve_page.dart';
@@ -36,9 +37,16 @@ class _CameraPageState extends State<CameraPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Camera Page')),
       body: Center(
-        child: _image == null
+        child: _isImageLoaded == false
             ? const Text('No image selected.')
-            : Image.file(_image!),
+            : kIsWeb
+                ? Image.network(_image!.path) //web specific
+                : defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS
+                    ? Image.file(_image!) //mobile specific
+                    : defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.fuchsia
+                        ? Image.file(_image!) //desktop specific
+                        : const Text('Unsupported platform'),
+
       ),
       floatingActionButton: Container(
         alignment: Alignment.bottomCenter,
@@ -46,7 +54,6 @@ class _CameraPageState extends State<CameraPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton.icon(
-              //TODO add another button to calculate
               onPressed: () {
                 showDialog(
                   context: context,
@@ -87,7 +94,7 @@ class _CameraPageState extends State<CameraPage> {
                   ? () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SolvePage(sudokuImage: _image!)), //TODO add transition
+                        MaterialPageRoute(builder: (context) => SolvePage(sudokuImage: _image!)),
                       );
                     }
                   : () {
