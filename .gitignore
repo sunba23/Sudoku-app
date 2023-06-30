@@ -78,3 +78,4 @@ windows/
 analysis_options.yaml
 app.iml
 pubspec.lock
+.env
