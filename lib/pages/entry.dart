@@ -12,7 +12,6 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.deepPurple,
       body: Center(
         child: Login(),
       ),

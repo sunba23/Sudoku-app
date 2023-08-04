@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class SolvePage extends StatefulWidget {
   final File sudokuImage;
-  const SolvePage({Key? key, required this.sudokuImage}) : super(key: key);
+  const SolvePage({super.key, required this.sudokuImage});
 
   @override
   State<SolvePage> createState() => _SolvePageState();
@@ -37,25 +37,28 @@ class _SolvePageState extends State<SolvePage> {
         Uri.parse(url),
         body: {'image': base64Image},
       );
+      print("step 1");
 
       if (response.statusCode == 200) {
         // Decode the response
         Map<String, dynamic> responseData = jsonDecode(response.body);
-
+        print("step 2");
         // Extract and decode the solution image
-        String solutionImageData = responseData['solution'];
+        String solutionImageData = responseData['result'];
         List<int> solutionBytes = base64Decode(solutionImageData);
-
+        print("step 3");
         // Temporary file to store the solution image
         File solutionImageFile =
             File('${widget.sudokuImage.path}_solution.jpg');
         await solutionImageFile.writeAsBytes(solutionBytes);
+        print("step 4");
 
         setState(() {
           _isSolved = true;
           _solutionImage = solutionImageFile;
         });
-      } else { // error response
+      } else {
+        // error response
         print('Error: ${response.statusCode}');
       }
     } catch (error) {
@@ -72,7 +75,6 @@ class _SolvePageState extends State<SolvePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Solve Page')),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

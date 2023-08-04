@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
           print("3");
           print(_isSignedIn);
           Navigator.of(context).pushReplacementNamed(
-            _isSignedIn ? '/home_page' : '/confirm',
+            _isSignedIn ? '/main_page' : '/confirm',
             arguments: _data,
           );
         }

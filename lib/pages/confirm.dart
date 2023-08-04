@@ -39,7 +39,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
 
         if (user.isSignedIn) {
           if (mounted) {
-            Navigator.pushReplacementNamed(context, '/home_page');
+            Navigator.pushReplacementNamed(context, '/main_page');
           }
         }
       }

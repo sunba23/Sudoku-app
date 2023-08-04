@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'solve_page.dart';
 
+import '../utils/platform_utils.dart';
+
 class CameraPage extends StatefulWidget {
-  const CameraPage({Key? key}) : super(key: key);
+  const CameraPage({super.key});
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -35,19 +36,10 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Camera Page')),
       body: Center(
-        child: _isImageLoaded == false
-            ? const Text('No image selected.')
-            : kIsWeb
-                ? Image.network(_image!.path) //web specific
-                : defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS
-                    ? Image.file(_image!) //mobile specific
-                    : defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.fuchsia
-                        ? Image.file(_image!) //desktop specific
-                        : const Text('Unsupported platform'),
-
-      ),
+          child: _isImageLoaded == false
+              ? const Text('No image selected.')
+              : platformShowImage(_image!)),
       floatingActionButton: Container(
         alignment: Alignment.bottomCenter,
         child: Row(
@@ -94,7 +86,9 @@ class _CameraPageState extends State<CameraPage> {
                   ? () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SolvePage(sudokuImage: _image!)),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SolvePage(sudokuImage: _image!)),
                       );
                     }
                   : () {
@@ -106,14 +100,13 @@ class _CameraPageState extends State<CameraPage> {
                       );
                     },
               style: ButtonStyle(
-              backgroundColor: _isImageLoaded 
-                ? MaterialStateProperty.all<Color>(Colors.green)
-                : MaterialStateProperty.all<Color>(Colors.grey),
+                backgroundColor: _isImageLoaded
+                    ? MaterialStateProperty.all<Color>(Colors.green)
+                    : MaterialStateProperty.all<Color>(Colors.grey),
               ),
               icon: const Icon(Icons.arrow_forward_ios_rounded),
               label: const Text("Run"),
             ),
-
           ],
         ),
       ),

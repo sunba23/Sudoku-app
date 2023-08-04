@@ -2,6 +2,7 @@ import 'package:app/pages/camera_page.dart';
 import 'package:app/pages/confirm.dart';
 import 'package:app/pages/entry.dart';
 import 'package:app/pages/home_page.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'helpers/configure_amplify.dart';
@@ -22,16 +23,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        colorScheme: const ColorScheme.dark(
+          secondary: Colors.white,
+          primary: Colors.white,
+        )
       ),
-      home: EntryScreen(),
+      home: const EntryScreen(),
       routes: {
         '/entry': (context) => const EntryScreen(),
+        '/main_page': (context) => const MainPage(),
         '/home_page': (context) => const HomePage(),
         '/camera_page': (context) => const CameraPage(),
         '/confirm': (context) => ConfirmScreen(data: ModalRoute.of(context)!.settings.arguments as LoginData),
-      }
-
+      },
     );
   }
 }
