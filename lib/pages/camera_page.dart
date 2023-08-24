@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +89,9 @@ class _CameraPageState extends State<CameraPage> {
                       size: 50,
                     )
                   : _isDetected
-                      ? SudokuWidget(
-                          _detectedNumbers) // 3. showing detected numbers
+                      ? SudokuWidget( // 3. showing detected numbers
+                          _detectedNumbers,
+                        )
                       : platformShowImage(_image!)), // 1. picking/showing image
       floatingActionButton: _isPickingImage
           ? Container(
@@ -144,12 +144,8 @@ class _CameraPageState extends State<CameraPage> {
                               _areNumbersBeingDetected = true;
                               _isPickingImage = false;
                             });
-                            safePrint(
-                                'Detected numbers no. 1 (should be null): $_detectedNumbers');
                             _detectedNumbers =
                                 await getNumbersFromImage(_image!);
-                            safePrint(
-                                'Detected numbers no. 2 (should be some numbers): $_detectedNumbers');
                             setState(() {
                               _areNumbersBeingDetected = false;
                               _isDetected = true;
