@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:http/http.dart' as http;
 
 class SolvePage extends StatefulWidget {
@@ -13,13 +16,13 @@ class SolvePage extends StatefulWidget {
 }
 
 class _SolvePageState extends State<SolvePage> {
-  bool _isSolved = false;
-  File? _solutionImage;
+  bool _isDetected = false;
+  Array? _detectedNumbers;
 
   Future<void> solveSudoku() async {
     setState(() {
-      _isSolved = false;
-      _solutionImage = null;
+      _isDetected = false;
+      _detectedNumbers = null;
     });
 
     //? q: resize the image?
@@ -29,7 +32,7 @@ class _SolvePageState extends State<SolvePage> {
     // Read the Sudoku image as bytes and encode it to base64
     List<int> imageBytes = await widget.sudokuImage.readAsBytes();
     String base64Image = base64Encode(imageBytes);
-    print('Base64 image: $base64Image');
+    safePrint('Base64 image: $base64Image');
 
     try {
       // Send the POST request to the AWS Lambda endpoint
@@ -37,39 +40,28 @@ class _SolvePageState extends State<SolvePage> {
         Uri.parse(url),
         body: {'image': base64Image},
       );
-      print("step 1");
 
       if (response.statusCode == 200) {
-        // Decode the response
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        print("step 2");
-        // Extract and decode the solution image
-        String solutionImageData = responseData['result'];
-        List<int> solutionBytes = base64Decode(solutionImageData);
-        print("step 3");
-        // Temporary file to store the solution image
-        File solutionImageFile =
-            File('${widget.sudokuImage.path}_solution.jpg');
-        await solutionImageFile.writeAsBytes(solutionBytes);
-        print("step 4");
+        Array detectedNumbers = responseData['sudoku'];
 
         setState(() {
-          _isSolved = true;
-          _solutionImage = solutionImageFile;
+          _isDetected = true;
+          _detectedNumbers = detectedNumbers;
         });
       } else {
         // error response
-        print('Error: ${response.statusCode}');
+        safePrint('Error: ${response.statusCode}');
       }
     } catch (error) {
-      print('Exception occurred: $error');
+      safePrint('Exception occurred: $error');
     }
   }
 
   @override
   void initState() {
     super.initState();
-    solveSudoku(); // instantly solve the sudoku
+    solveSudoku();
   }
 
   @override
@@ -79,9 +71,12 @@ class _SolvePageState extends State<SolvePage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _isSolved
-              ? const Text('Sudoku solved!')
-              : const Text('Solving sudoku, please wait...'),
+          _isDetected
+              ? const Text('Sudoku detected!')
+              : LoadingAnimationWidget.threeRotatingDots(
+            color: Colors.white,
+            size: 50,
+          ),
         ],
       )),
     );

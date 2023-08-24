@@ -35,9 +35,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> fetchAndSetUserEmail() async {
     final fetchedEmail = await fetchUserEmail();
-    setState(() {
-      email = fetchedEmail;
-    });
+    if (mounted) { // need to avoid calling `setState` if the widget is no longer in the widget tree
+      setState(() {
+        email = fetchedEmail;
+      });
+    }
   }
 
   Future<String> fetchUserEmail() async {
@@ -82,12 +84,12 @@ class _ProfilePageState extends State<ProfilePage> {
       _handleUpdateUserAttributeResult(result);
     } on AuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.blueAccent,
-            content: Text('Error updating user attribute: ${e.message}',
-            style: const TextStyle(fontSize: 15)),
-          ),
-        );
+        SnackBar(
+          backgroundColor: Colors.blueAccent,
+          content: Text('Error updating user attribute: ${e.message}',
+              style: const TextStyle(fontSize: 15)),
+        ),
+      );
     }
   }
 
@@ -104,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SnackBar(
             backgroundColor: Colors.blueAccent,
             content: Text('Successfully updated attribute',
-            style: TextStyle(fontSize: 15)),
+                style: TextStyle(fontSize: 15)),
           ),
         );
         break;
@@ -115,9 +117,10 @@ class _ProfilePageState extends State<ProfilePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.blueAccent,
-        content: Text('A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
-      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
-        style: const TextStyle(fontSize: 15)),
+        content: Text(
+            'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
+            'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
+            style: const TextStyle(fontSize: 15)),
       ),
     );
   }
