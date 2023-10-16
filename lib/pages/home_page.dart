@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -12,12 +13,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Home Page'),
+            Text(
+              'Home Page',
+              style: GoogleFonts.poppins(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         )
       ),

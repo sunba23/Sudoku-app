@@ -66,17 +66,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 .vscode/
-amplify/
-android/
-ios/
-linux/
-macos/
-test/
-web/
-windows/
-.metadata
-analysis_options.yaml
-app.iml
-pubspec.lock
-assets/
 .env

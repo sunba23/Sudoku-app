@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -57,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildEmail(String email) => Column(
         children: [
           const Text(
+            
             "Email: ",
           ),
           Text(

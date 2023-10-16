@@ -4,7 +4,6 @@ import 'camera_page.dart';
 import 'home_page.dart';
 import 'package:flutter/material.dart';
 
-
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -57,7 +56,6 @@ class _MainPageState extends State<MainPage> {
             label: 'Settings',
           ),
         ],
-      )
-    );
+    ));
   }
 }

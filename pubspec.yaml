@@ -39,6 +39,7 @@ dependencies:
   loading_animation_widget:
   flutter_layout_grid: ^2.0.0
   http: ^1.1.0
+  google_fonts: ^5.1.0
 
   flutter:
     sdk: flutter
