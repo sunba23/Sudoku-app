@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      title: 'Log in or sign up',
+      title: 'Welcome!',
       onLogin: _onLogin,
       onSignup: _onSignup,
       onRecoverPassword: (String email) => _onRecoverPassword(context, email),
