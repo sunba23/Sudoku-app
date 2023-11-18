@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../components/title_area.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -27,20 +29,11 @@ class _ProfilePageState extends State<ProfilePage> {
     //     ),
     //   ),
     // );
-    return Scaffold(
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Profile page',
-                style: GoogleFonts.poppins(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          )
+    return const Scaffold(
+      body: Column(
+        children: [
+          TitleArea(title: "Profile"),
+        ],
       ),
     );
   }
