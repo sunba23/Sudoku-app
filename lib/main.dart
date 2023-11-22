@@ -11,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureAmplify();
-  // await dotenv.load();
+  await dotenv.load();
   runApp(const MyApp());
 }
 
