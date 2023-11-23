@@ -25,6 +25,7 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   File? _image;
+
   // bool _isImageLoaded = false;
   // bool _isPickingImage = true; // stage 1
   // bool _areNumbersBeingDetected = false; // stage 2
@@ -51,50 +52,45 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<String> getImageBase64(File image) async {
     Uint8List imageBytes = await image.readAsBytes();
+    // print imagebyteslength
+    //debugPrint('imageBytes.length: ${imageBytes.length}');
     String encodedData = base64Encode(imageBytes);
     return encodedData;
   }
 
-
   Future<String?> getNumbersFromImage(File image) async {
     String url = dotenv.env['AWS_LAMBDA_ENDPOINT_URL']!;
 
-    // try {
-      Map<String, dynamic> requestBody = {
-        'body': {'image': await getImageBase64(_image!)},
+    try {
+      Map<String, String> requestBody = {
+        'image': await getImageBase64(_image!),
       };
 
-      //request body length
-      int length = jsonEncode(requestBody).length;
-      debugPrint('length: $length');
-      debugPrint('requestBody: $requestBody', wrapWidth: 1000);
-
-      debugPrint("LAST 200:\n");
-      debugPrint(requestBody['body']['image'].toString().substring(length - 200, length - 1), wrapWidth: 1000);
-
-
       log(requestBody.toString());
-      // Send the POST request
+
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
 
-    //   if (response.statusCode == 200) {
-    //     Map<String, dynamic> responseData = jsonDecode(response.body);
-    //     Map<String, dynamic> responseBody = jsonDecode(responseData['body']);
-    //     String detectedNumbers = responseBody['sudoku'];
-    //     _isDetected = true;
-    //     return detectedNumbers;
-    //   } else {
-    //     safePrint(
-    //       'Error number: ${response.statusCode} ${response.reasonPhrase}');
-    //   }
-    // } catch (error) {
-    //   safePrint('Exception occurred: $error');
-    // }
-    // return null;
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        String bodyString = responseBody['body'];
+        Map<String, dynamic> bodyContent = jsonDecode(bodyString);
+
+        String? detectedNumbers = bodyContent['sudoku'];
+        _isDetected = true;
+        safePrint("Detected numbers: $detectedNumbers");
+        return detectedNumbers;
+      } else {
+        safePrint(
+            'Error number: ${response.statusCode} ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      safePrint('Exception occurred: $error');
+    }
+    return null;
   }
 
   // @override
@@ -209,28 +205,31 @@ class _CameraPageState extends State<CameraPage> {
             child: const Text('pick image'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              //_detectedNumbers = await getNumbersFromImage(_image!);
               setState(() {
                 _isDetected = true;
               });
             },
-            child: const Text('detect'),
+            child: const Text('Analyze image'),
           ),
           _isDetected
-            ? FutureBuilder(
-                future: getNumbersFromImage(_image!),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data);
-                  } else {
-                    return const Text('Loading...');
-                  }
-                },
-              )
-            : const Text('not detected'),
+              ? FutureBuilder(
+            future: getNumbersFromImage(_image!),
+            //
+            //TODO: make showImage function to replace the future above
+            //future: showImage(_image!),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data);
+              } else {
+                return const Text('Loading...');
+              }
+            },
+          )
+              : const Text('not detected'),
         ],
       ),
     );
   }
 }
-
