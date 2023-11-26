@@ -22,10 +22,10 @@ class _MainPageState extends State<MainPage> {
   int currentIndex = 1;
   final SwiperController _swiperController = SwiperController();
 
-  List pages = const [
-    HistoryPage(),
+  List pages = [
+    const HistoryPage(),
     CameraPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   void onTap(int index) {
