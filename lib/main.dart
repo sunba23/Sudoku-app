@@ -1,4 +1,4 @@
-import 'package:app/bloc/detect_sudoku_bloc.dart';
+import 'package:app/bloc/detect_bloc/detect_sudoku_bloc.dart';
 import 'package:app/pages/camera_page.dart';
 import 'package:app/pages/confirm.dart';
 import 'package:app/pages/entry.dart';

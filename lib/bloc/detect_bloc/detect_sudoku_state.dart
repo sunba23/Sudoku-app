@@ -9,14 +9,24 @@ abstract class DetectSudokuState extends Equatable {
 
 class InitialState extends DetectSudokuState {}
 
-class PickedState extends DetectSudokuState {
-  final File sudokuImage;
+class PreviewState extends DetectSudokuState {
+  final File? sudokuImage;
+  final String? assetPath;
 
-  const PickedState(this.sudokuImage);
+  const PreviewState(this.sudokuImage, this.assetPath);
 
   @override
-  List<Object> get props => [sudokuImage];
+  List<Object> get props => [sudokuImage ?? Object(), assetPath ?? Object()];
 }
+
+// class PickedState extends DetectSudokuState {
+//   final File sudokuImage;
+//
+//   const PickedState(this.sudokuImage);
+//
+//   @override
+//   List<Object> get props => [sudokuImage];
+// }
 
 class LoadingState extends DetectSudokuState {}
 

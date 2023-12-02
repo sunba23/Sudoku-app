@@ -38,6 +38,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 223, 225, 238),
       resizeToAvoidBottomInset: false,
       extendBody: true,
       body: Swiper(
