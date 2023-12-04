@@ -1,4 +1,6 @@
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:app/utils/rive_utils.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:rive/rive.dart';
 
 import '../components/animated_bar.dart';
@@ -16,28 +18,53 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   RiveAsset selectedBottomNav = bottomNavs[1];
   int currentIndex = 1;
+  final SwiperController _swiperController = SwiperController();
 
-  List pages = const [
-    HistoryPage(),
+  List pages = [
+    const HistoryPage(),
     CameraPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   void onTap(int index) {
     setState(() {
       currentIndex = index;
+      selectedBottomNav = bottomNavs[index];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 223, 225, 238),
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: pages[currentIndex],
+      body: Swiper(
+        controller: _swiperController,
+        itemBuilder: (BuildContext context, int index) {
+          return pages[index];
+        },
+        // loop: false, // find a way to use it without the ugly icons
+        itemCount: pages.length,
+        onIndexChanged: (int index) {
+          bottomNavs[index].input!.change(true);
+          onTap(index);
+          Future.delayed(const Duration(seconds: 1), () {
+            bottomNavs[index].input!.change(false);
+          });
+        },
+        pagination: const SwiperPagination(
+          builder: DotSwiperPaginationBuilder(
+            color: Colors.transparent,
+            activeColor: Colors.transparent,
+          )
+        ),
+        control: const SwiperControl(
+          color: Colors.transparent, //this is scuffed xd, how to pass null?
+        ),
+      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: SafeArea(
@@ -57,13 +84,13 @@ class _MainPageState extends State<MainPage> {
                     bottomNavs.length,
                         (index) => GestureDetector(
                       onTap: () {
-                        debugPrint(index.toString());
                         bottomNavs[index].input!.change(true);
                         if (bottomNavs[index] != selectedBottomNav) {
                           setState(() {
                             selectedBottomNav = bottomNavs[index];
                             onTap(index);
                           });
+                          _swiperController.move(index);
                         }
                         Future.delayed(const Duration(seconds: 1), () {
                           bottomNavs[index].input!.change(false);
@@ -84,15 +111,20 @@ class _MainPageState extends State<MainPage> {
                                 bottomNavs[index].src,
                                 artboard: bottomNavs[index].artboard,
                                 onInit: (artboard) {
-                                  StateMachineController controller = RiveUtils.getRiveController(
-                                      artboard,
-                                      stateMachineName: bottomNavs[index].stateMachineName);
+                                  StateMachineController controller =
+                                  RiveUtils.getRiveController(
+                                    artboard,
+                                    stateMachineName:
+                                    bottomNavs[index].stateMachineName,
+                                  );
                                   debugPrint(controller.toString());
 
                                   if (index != 1) {
-                                    bottomNavs[index].input = controller.findSMI("active") as SMIBool;
-                                  } else { // the dashboard has a different named input
-                                    bottomNavs[index].input = controller.findSMI("isActive") as SMIBool;
+                                    bottomNavs[index].input =
+                                    controller.findSMI("active") as SMIBool;
+                                  } else {
+                                    bottomNavs[index].input =
+                                    controller.findSMI("isActive") as SMIBool;
                                   }
                                 },
                               ),
