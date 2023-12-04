@@ -58,6 +58,7 @@ dependencies:
   bloc: ^8.1.2
   equatable: ^2.0.5
   dotted_border: ^2.1.0
+  lottie: ^2.7.0
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
     - lib/assets/
     - lib/assets/rive_assets/
     - lib/assets/recommended_sudokus/
+    - lib/assets/lottie_assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

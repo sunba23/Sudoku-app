@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import '../bloc/detect_bloc/detect_sudoku_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:rive/rive.dart';
+import '../bloc/detect_solve_bloc/detect_solve_sudoku_bloc.dart';
 
 import 'dart:io';
 
@@ -22,7 +24,7 @@ class _CameraPageState extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 223, 225, 238),
-      body: BlocConsumer<DetectSudokuBloc, DetectSudokuState>(
+      body: BlocConsumer<DetectSolveSudokuBloc, DetectSolveSudokuState>(
         listener: (context, state) {
         },
         builder: (context, state) {
@@ -31,7 +33,7 @@ class _CameraPageState extends State<CameraPage> {
           }
           if (state is InitialState) {
             return _buildInitialUI();
-          } else if (state is PreviewState) { // we build the preview UI based on the image source
+          } else if (state is PreviewState) { // we pass different arguments to preview UI based on the image source
             if (state.sudokuImage == null) {
               return _buildPreviewUI(null, state.assetPath!);
             } else {
@@ -39,7 +41,16 @@ class _CameraPageState extends State<CameraPage> {
             }
           } else if (state is LoadedState) {
             return _buildLoadedUI(state.detectedSudoku);
-          } else {
+          } else if (state is ErrorState) {
+            return _buildErrorDetectingUI(state.message);
+          } else if (state is LoadingSolvingState) {
+            return _buildSolvingLoadingUI();
+          } else if (state is SolvedState) {
+            return _buildSolvedUI(state.solvedSudoku);
+          } else if (state is ErrorSolvingState) {
+            return _buildErrorSolvingUI(state.message);
+          }
+          else {
             return const SizedBox.shrink();
           }
         },
@@ -54,7 +65,7 @@ class _CameraPageState extends State<CameraPage> {
         const SizedBox(height: 60.0,),
         Container( // photo upload card
           width: MediaQuery.of(context).size.width * 0.9,
-          height: MediaQuery.of(context).size.height * 0.27,
+          height: MediaQuery.of(context).size.height * 0.26,
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 235, 235, 245),
             borderRadius: BorderRadius.circular(15),
@@ -80,7 +91,7 @@ class _CameraPageState extends State<CameraPage> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.height * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.15,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 57, 64, 83),
                       borderRadius: BorderRadius.circular(15),
@@ -88,7 +99,7 @@ class _CameraPageState extends State<CameraPage> {
                     child: GestureDetector(
                       onTap: () {
                         String assetPath = 'lib/assets/recommended_sudokus/5.jpg';
-                        BlocProvider.of<DetectSudokuBloc>(context).add(PreviewEvent(null, assetPath));
+                        BlocProvider.of<DetectSolveSudokuBloc>(context).add(PreviewEvent(null, assetPath));
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -107,11 +118,11 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.height * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.15,
                     child: GestureDetector(
                       onTap: () {
                         String assetPath = 'lib/assets/recommended_sudokus/5.jpg';
-                        BlocProvider.of<DetectSudokuBloc>(context).add(PreviewEvent(null, assetPath));
+                        BlocProvider.of<DetectSolveSudokuBloc>(context).add(PreviewEvent(null, assetPath));
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -186,7 +197,7 @@ class _CameraPageState extends State<CameraPage> {
                         final image = await imagePicker.pickImage(source: ImageSource.gallery);
                         File file = File(image!.path);
                         if (mounted){
-                          BlocProvider.of<DetectSudokuBloc>(context).add(PreviewEvent(file, null));
+                          BlocProvider.of<DetectSolveSudokuBloc>(context).add(PreviewEvent(file, null));
                         }
                       },
                       child: Icon(
@@ -207,24 +218,63 @@ class _CameraPageState extends State<CameraPage> {
 
   Widget _buildPreviewUI(File? sudokuImage, String? assetPath) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        sudokuImage != null ? Image.file(sudokuImage) : Image.asset(assetPath!),
-        ElevatedButton(
-          onPressed: () {
-            BlocProvider.of<DetectSudokuBloc>(context).add(
-              DetectingEvent(sudokuImage, assetPath),
-            );
-          },
-          child: const Text('Analyze Image'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            BlocProvider.of<DetectSudokuBloc>(context).add(
-              ClearStateEvent(),
-            );
-          },
-          child: const Text('Clear'),
+        const TitleArea(title: "Solve"),
+        const SizedBox(height: 60.0,),
+        Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 235, 235, 245),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Text(
+                  'Image preview',
+                  style: GoogleFonts.nunito(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(255, 57, 64, 83),
+                  ),
+                ),
+                const SizedBox(height: 20.0,),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color.fromARGB(255, 57, 64, 83), width: 2),
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: sudokuImage != null
+                          ? Image.file(sudokuImage).image
+                          : Image.asset(assetPath!).image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0,),
+                ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                      DetectingEvent(sudokuImage, assetPath),
+                    );
+                  },
+                  child: const Text('Detect numbers'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                      ClearStateEvent(),
+                    );
+                  },
+                  child: const Text('Back'),
+                ),
+              ],
+            ),
+          )
         ),
       ],
     );
@@ -232,43 +282,148 @@ class _CameraPageState extends State<CameraPage> {
 
 
   Widget _buildLoadingUI() {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Column(
+      children: [
+        const TitleArea(title: "Solve"),
+        const SizedBox(height: 60.0,),
+        Lottie.asset('lib/assets/lottie_assets/Animation1.json'),
+        const SizedBox(height: 20.0,),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              'Detecting numbers usually takes up to 20 seconds. You may leave this page and keep using the app while we detect them.',
+              style: GoogleFonts.nunito(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: const Color.fromARGB(255, 57, 64, 83),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildLoadedUI(String detectedSudoku) {
-    // create the sudoku grid. the grid is a 9x9 grid of text fields. the detectedSudoku string is used to populate the text fields - it consists of 81 characters, each representing a cell in the sudoku grid. the characters are in row-major order, and are either a digit (1-9) or a period (.) to represent an empty cell.
-    return Center(
+    final TextEditingController sudokuInputController = TextEditingController(text: detectedSudoku);
+    String correctedText = detectedSudoku;
+    return Column(
+      children: [
+        const TitleArea(title: "Solve"),
+        TextFormField(
+          keyboardType: TextInputType.number,
+          controller: sudokuInputController,
+          onChanged: (input) {correctedText = input;},
+        ),
+        ElevatedButton(
+          onPressed: () {
+            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+              ClearStateEvent(),
+            );
+          },
+          child: const Text('Close'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Pass the corrected Sudoku grid to SolveSudokuBloc
+            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+              SolvingEvent(correctedText),
+            );
+          },
+          child: const Text("Solve"),
+        ),
+      ],
+    );
+  }
+
+Widget _buildErrorDetectingUI(String message) {
+    return Column(
+      children: [
+        const TitleArea(title: "Solve"),
+        const SizedBox(height: 60.0,),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              message,
+              style: GoogleFonts.nunito(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: const Color.fromARGB(255, 57, 64, 83),
+              ),
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+              ClearStateEvent(),
+            );
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSolvingLoadingUI() {
+    return SingleChildScrollView( //avoids overflow due to the keyboard being visible for a moment
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Sudoku Detected:'),
-          // GridView.count(
-          //   shrinkWrap: true,
-          //   crossAxisCount: 9,
-          //   children: List.generate(81, (index) {
-          //     return Center(
-          //       child: SizedBox(
-          //         width: 30,
-          //         height: 30,
-          //         child: TextFormField(
-          //           initialValue: detectedSudoku[index] == '.'
-          //               ? ''
-          //               : detectedSudoku[index],
-          //           textAlign: TextAlign.center,
-          //           keyboardType: TextInputType.number,
-          //           decoration: const InputDecoration(
-          //             border: OutlineInputBorder(),
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //   }),
-          // ),
-          Text(detectedSudoku),
+          const TitleArea(title: "Solve"),
+          const SizedBox(height: 60.0,),
+          // Lottie.asset('lib/assets/lottie_assets/solveAnimation.json'),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Lottie.asset('lib/assets/lottie_assets/Animation2.json'),
+          ),
+          const SizedBox(height: 20.0,),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Solving sudoku usually takes up to 5 seconds. You may leave this page and keep using the app while we solve it.',
+                style: GoogleFonts.nunito(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: const Color.fromARGB(255, 57, 64, 83),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSolvedUI(String solvedSudoku) {
+    return Column(
+      children: [
+        const TitleArea(title: "Solve"),
+        Text(solvedSudoku),
+        ElevatedButton(
+          onPressed: () {
+            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+              ClearStateEvent(),
+            );
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorSolvingUI(String message){
+    return Column(
+      children: [
+        const TitleArea(title: "Solve"),
+        Text("Error encountered: $message"),
+      ],
     );
   }
 }

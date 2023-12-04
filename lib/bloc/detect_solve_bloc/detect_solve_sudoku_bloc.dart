@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -11,12 +10,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 
-part 'detect_sudoku_event.dart';
-part 'detect_sudoku_state.dart';
+part 'detect_solve_sudoku_event.dart';
+part 'detect_solve_sudoku_state.dart';
 
-class DetectSudokuBloc extends Bloc<DetectSudokuEvent, DetectSudokuState> {
+class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudokuState> {
 
-  DetectSudokuBloc() : super(InitialState()) {
+  DetectSolveSudokuBloc() : super(InitialState()) {
     on<PreviewEvent>((event, emit) async {
       if (event.file != null) {
         emit(PreviewState(event.file, null));
@@ -24,18 +23,22 @@ class DetectSudokuBloc extends Bloc<DetectSudokuEvent, DetectSudokuState> {
         emit(PreviewState(null, event.assetPath));
       }
     });
-    // on<PickingEvent>((event, emit) async {
-    //   final imagePicker = ImagePicker();
-    //   final image = await imagePicker.pickImage(source: ImageSource.gallery);
-    //   emit(PickedState(File(image!.path)));
-    // });
     on<DetectingEvent>((event, emit) async {
       emit(LoadingState());
       String? detectedNumbers = await getNumbersFromImage(event.sudokuImage, event.assetPath);
-      emit(LoadedState(detectedNumbers ?? 'No numbers detected'));
+      detectedNumbers != null ? emit(LoadedState(detectedNumbers)) : emit(const ErrorState("An error has occurred. Please try again later."));
     });
     on<ClearStateEvent>((event, emit) {
       emit(InitialState());
+    });
+    on<SolvingEvent>((event, emit) async {
+      emit(LoadingSolvingState());
+      await Future.delayed(const Duration(seconds: 3)); //TODO !!!! DELETE THIS LATER !!!!!
+      String? solvedSudoku = await getSolvedSudoku(event.sudoku);
+      emit(SolvedState(solvedSudoku ?? 'Unable to solve sudoku'));
+    });
+    on<ErrorEvent>((event, emit) {
+      emit(ErrorState(event.message));
     });
   }
 
@@ -54,7 +57,7 @@ class DetectSudokuBloc extends Bloc<DetectSudokuEvent, DetectSudokuState> {
   }
 
   Future<String?> getNumbersFromImage(File? image, String? assetPath) async {
-    String url = dotenv.env['AWS_LAMBDA_ENDPOINT_URL']!;
+    String url = 'http://10.0.2.2:5000/detect'; // access localhost from emulator
 
     try {
       Map<String, String> requestBody = {
@@ -69,17 +72,42 @@ class DetectSudokuBloc extends Bloc<DetectSudokuEvent, DetectSudokuState> {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
-        String bodyString = responseBody['body'];
-        Map<String, dynamic> bodyContent = jsonDecode(bodyString);
-
-        String? detectedNumbers = bodyContent['sudoku'];
+        String? detectedNumbers = responseBody['sudoku'];
         return detectedNumbers;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      print('Exception occurred: $error');
+    }
+    return null;
+  }
+
+  Future<String?> getSolvedSudoku(String sudoku) async {
+    String url = 'http://10.0.2.2:5000/solve'; // access localhost from emulator
+
+    try {
+      Map<String, String> requestBody = {
+        'sudoku': sudoku,
+      };
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        String? solvedSudoku = responseBody['sudoku'];
+        return Future.value(solvedSudoku);
       } else {
         throw 'Error number: ${response.statusCode} ${response.reasonPhrase}';
       }
     } catch (error) {
-      safePrint('Exception occurred: $error');
+      print('Exception occurred: $error');
     }
     return null;
   }
+
 }

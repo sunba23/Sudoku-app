@@ -1,4 +1,4 @@
-import 'package:app/bloc/detect_bloc/detect_sudoku_bloc.dart';
+import 'package:app/bloc/detect_solve_bloc/detect_solve_sudoku_bloc.dart';
 import 'package:app/pages/camera_page.dart';
 import 'package:app/pages/confirm.dart';
 import 'package:app/pages/entry.dart';
@@ -19,8 +19,8 @@ void main() async {
     MultiBlocProvider(
       providers:
       [
-        BlocProvider<DetectSudokuBloc>(
-          create: (context) => DetectSudokuBloc(),
+        BlocProvider<DetectSolveSudokuBloc>(
+          create: (context) => DetectSolveSudokuBloc(),
         ),
       ],
       child: const MyApp(),
