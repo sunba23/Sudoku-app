@@ -13,8 +13,8 @@ import 'package:image_picker/image_picker.dart';
 part 'detect_solve_sudoku_event.dart';
 part 'detect_solve_sudoku_state.dart';
 
-class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudokuState> {
-
+class DetectSolveSudokuBloc
+    extends Bloc<DetectSolveSudokuEvent, DetectSolveSudokuState> {
   DetectSolveSudokuBloc() : super(InitialState()) {
     on<PreviewEvent>((event, emit) async {
       if (event.file != null) {
@@ -25,15 +25,20 @@ class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudo
     });
     on<DetectingEvent>((event, emit) async {
       emit(LoadingState());
-      String? detectedNumbers = await getNumbersFromImage(event.sudokuImage, event.assetPath);
-      detectedNumbers != null ? emit(LoadedState(detectedNumbers)) : emit(const ErrorState("An error has occurred. Please try again later."));
+      String? detectedNumbers =
+          await getNumbersFromImage(event.sudokuImage, event.assetPath);
+      detectedNumbers != null
+          ? emit(LoadedState(detectedNumbers))
+          : emit(const ErrorState(
+              "An error has occurred. Please try again later."));
     });
     on<ClearStateEvent>((event, emit) {
       emit(InitialState());
     });
     on<SolvingEvent>((event, emit) async {
       emit(LoadingSolvingState());
-      await Future.delayed(const Duration(seconds: 3)); //TODO !!!! DELETE THIS LATER !!!!!
+      await Future.delayed(
+          const Duration(seconds: 3)); //TODO !!!! DELETE THIS LATER !!!!!
       String? solvedSudoku = await getSolvedSudoku(event.sudoku);
       emit(SolvedState(solvedSudoku ?? 'Unable to solve sudoku'));
     });
@@ -43,7 +48,7 @@ class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudo
   }
 
   Future<String> getImageBase64(File? image, String? assetPath) async {
-    if (image != null){
+    if (image != null) {
       Uint8List imageBytes = await image.readAsBytes();
       String encodedData = base64Encode(imageBytes);
       return encodedData;
@@ -57,7 +62,8 @@ class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudo
   }
 
   Future<String?> getNumbersFromImage(File? image, String? assetPath) async {
-    String url = 'http://10.0.2.2:5000/detect'; // access localhost from emulator
+    String url =
+        'http://10.0.2.2:5000/detect'; // access localhost from emulator
 
     try {
       Map<String, String> requestBody = {
@@ -69,6 +75,8 @@ class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudo
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
+
+      print(response.body.toString());
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
@@ -109,5 +117,4 @@ class DetectSolveSudokuBloc extends Bloc<DetectSolveSudokuEvent, DetectSolveSudo
     }
     return null;
   }
-
 }
