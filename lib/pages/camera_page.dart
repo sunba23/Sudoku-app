@@ -19,7 +19,8 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   final double cardRadius = 15.0;
-  String correctedText = '';
+  ValueNotifier<String> correctedText = ValueNotifier<String>('');
+  //String correctedText = '';
 
   @override
   Widget build(BuildContext context) {
@@ -342,7 +343,7 @@ class _CameraPageState extends State<CameraPage> {
   Widget _buildLoadedUI(String detectedSudoku) {
     final TextEditingController sudokuInputController =
         TextEditingController(text: detectedSudoku);
-    String correctedText = detectedSudoku;
+    //String correctedText = detectedSudoku;
     print(detectedSudoku.length);
     return Column(
       children: [
@@ -353,10 +354,8 @@ class _CameraPageState extends State<CameraPage> {
           puzzleString: detectedSudoku,
           isEditable: true,
           onChanged: (newState) {
-            setState(() {
-              correctedText = newState;
-            });
-            print("correctedText: $correctedText");
+            correctedText.value = newState;
+            print("correctedText: ${correctedText.value}");
           },
         ),
         ElevatedButton(
@@ -367,16 +366,21 @@ class _CameraPageState extends State<CameraPage> {
           },
           child: const Text('Close'),
         ),
-        ElevatedButton(
-          onPressed: () {
-            // Pass the corrected Sudoku grid to SolveSudokuBloc
-            print(correctedText);
+        ValueListenableBuilder<String>(
+          valueListenable: correctedText,
+          builder: (context, value, child) {
+            return ElevatedButton(
+              onPressed: () {
+                print("value: $value");
+                print("value length: ${value.length}");
 
-            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
-              SolvingEvent(correctedText),
+                BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                  SolvingEvent(value),
+                );
+              },
+              child: const Text("Solve"),
             );
           },
-          child: const Text("Solve"),
         ),
       ],
     );

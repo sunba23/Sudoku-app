@@ -26,7 +26,12 @@ class _SudokuGridState extends State<SudokuGrid> {
   @override
   void initState() {
     super.initState();
-    gridState = widget.puzzleString.split('');
+    gridState =
+        List<String>.filled(81, '.'); // Initialize gridState with 81 dots
+    for (int i = 0; i < widget.puzzleString.length; i++) {
+      gridState[i] = widget.puzzleString[
+          i]; // Overwrite the initial dots with the characters from puzzleString
+    }
   }
 
   @override
