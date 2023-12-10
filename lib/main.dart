@@ -10,6 +10,7 @@ import 'package:flutter_login/flutter_login.dart';
 import 'helpers/configure_amplify.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureAmplify();

@@ -26,9 +26,26 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ),
       children: historyElements.map((historyElementValue) {
-        return HistoryElementWidget(historyElement: historyElementValue);
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          child: HistoryElementWidget(historyElement: historyElementValue, onDeleteElement: deleteHistoryElement),
+        );
       }).toList(),
     );
+  }
+
+  Future<void> deleteHistoryElement(HistoryElement historyElement) async {
+    // setState(() {
+    //   historyElements.remove(historyElement);
+    // });
+    historyElements.remove(historyElement);
+    SharedPreferences.getInstance().then((prefs) {
+      List<String> historyValue = prefs.getStringList('history') ?? [];
+      historyValue.remove(historyElement.toJsonString());
+      prefs.setStringList('history', historyValue);
+    });
+    print('deleted a history element! history now is:');
+    print(historyElements);
   }
 
   @override
@@ -98,20 +115,23 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      backgroundColor: const Color(0xffdfe1ee),
+      body: Stack(
         children: [
-          const TitleArea(title: "History"),
           FutureBuilder<List<String>?>(
             future: _historyFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else {
-                if (snapshot.hasData && snapshot.data != null) {
+                if (snapshot.hasData && (snapshot.data != null && snapshot.data!.isNotEmpty)) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 15),
-                    child: Column(
-                      children: getHistoryElementWidgets(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: ListView(
+                        children: [const SizedBox(height: 120), ...getHistoryElementWidgets(), const SizedBox(height: 100),],
+                      ),
                     ),
                   );
                 } else {
@@ -127,6 +147,37 @@ class _HistoryPageState extends State<HistoryPage> {
               }
             },
           ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              height: 140,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.bottomCenter,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [const Color(0xffdfe1ee).withOpacity(0), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee)],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            child: Container(
+              height: 140,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.bottomCenter,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee).withOpacity(0)],
+                ),
+              ),
+            ),
+          ),
+          const TitleArea(title: "History"),
         ],
       ),
     );

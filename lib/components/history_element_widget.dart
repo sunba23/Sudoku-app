@@ -1,9 +1,11 @@
 import 'package:app/models/history_element.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HistoryElementWidget extends StatefulWidget {
-  const HistoryElementWidget({super.key, required this.historyElement});
+  const HistoryElementWidget({super.key, required this.historyElement, required this.onDeleteElement});
   final HistoryElement historyElement;
+  final Function(HistoryElement) onDeleteElement;
   @override
   State<HistoryElementWidget> createState() => _HistoryElementWidgetState();
 }
@@ -30,81 +32,77 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/history_element_page',
-              arguments: {
-                'historyElement': widget.historyElement,
-              },
-            );
-          },
-          child: Container(
-            height: 100,
-            width: double.infinity,
-            decoration: BoxDecoration(
+    return Dismissible(
+      // key: Key(widget.historyElement.hashCode.toString()),
+      key: UniqueKey(),
+      background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: Icon(
+              Icons.delete,
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 5,
-                  offset: Offset(0, 3),
-                ),
-              ],
             ),
-            child: Row(
+          ),
+        ),
+      ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        widget.onDeleteElement(widget.historyElement);
+      },
+      child: InkWell(
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text('2 grid widgets go here'),
+              );
+            },
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color (0xffebebf5),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        widget.historyElement.title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                Text(
+                  differenceString,
+                  style: GoogleFonts.nunito(
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(255, 57, 64, 83),
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.historyElement.subtitle,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          differenceString,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+                const SizedBox(height: 10),
+                Text(
+                  'input sudoku: ${widget.historyElement.inputSudokuString}',
+                  style: GoogleFonts.nunito(
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(255, 57, 64, 83),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'solved sudoku: ${widget.historyElement.outputSudokuString}',
+                  style: GoogleFonts.nunito(
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(255, 57, 64, 83),
                   ),
                 ),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
