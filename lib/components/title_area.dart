@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class TitleArea extends StatelessWidget {
   const TitleArea({
-    Key? key,
+    super.key,
     required this.title,
     this.icon,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String title;
   final IconData? icon;
@@ -27,14 +27,12 @@ class TitleArea extends StatelessWidget {
             ),
           ),
           onTap == null ? const SizedBox(width: 0) : const SizedBox(width: 16),
-          Text(
-            title,
-            style: GoogleFonts.nunito(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: const Color.fromARGB(255, 57, 64, 83),
-            )
-          ),
+          Text(title,
+              style: GoogleFonts.nunito(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: const Color.fromARGB(255, 57, 64, 83),
+              )),
         ],
       ),
     );
