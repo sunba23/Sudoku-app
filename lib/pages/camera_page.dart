@@ -460,7 +460,13 @@ class _CameraPageState extends State<CameraPage> {
     return Column(
       children: [
         const TitleArea(title: "Solve"),
-        Text(solvedSudoku),
+        SudokuGrid(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.width,
+          puzzleString: solvedSudoku,
+          isEditable: false,
+          onChanged: (newState) {},
+        ),
         ElevatedButton(
           onPressed: () {
             BlocProvider.of<DetectSolveSudokuBloc>(context).add(
