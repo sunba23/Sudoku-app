@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:app/models/history_element.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -40,6 +42,9 @@ class DetectSolveSudokuBloc
       await Future.delayed(
           const Duration(seconds: 3)); //TODO !!!! DELETE THIS LATER !!!!!
       String? solvedSudoku = await getSolvedSudoku(event.sudoku);
+      if (solvedSudoku != null) {
+        await addSudokuToHistory(event.sudoku, solvedSudoku);
+      }
       emit(SolvedState(solvedSudoku ?? 'Unable to solve sudoku'));
     });
     on<ErrorEvent>((event, emit) {
@@ -116,5 +121,28 @@ class DetectSolveSudokuBloc
       print('Exception occurred: $error');
     }
     return null;
+  }
+
+  Future<void> addSudokuToHistory(String sudoku, String solvedSudoku) async {
+    print("Adding sudoku to history");
+    try {
+      final historyElement = HistoryElement(
+        title: 'Sudoku',
+        subtitle: 'Solved',
+        inputSudokuString: sudoku,
+        outputSudokuString: solvedSudoku,
+        timestamp: DateTime.now(),
+      );
+      String jsonifiedHistoryElement = historyElement.toJsonString();
+
+      await SharedPreferences.getInstance().then((prefs) {
+        List<String>? history = prefs.getStringList('history');
+        history ??= [];
+        history.add(jsonifiedHistoryElement);
+        prefs.setStringList('history', history);
+      });
+    } catch (error) {
+      print('Exception occurred: $error');
+    }
   }
 }
