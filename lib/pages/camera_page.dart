@@ -313,7 +313,7 @@ class _CameraPageState extends State<CameraPage> {
       children: [
         const TitleArea(title: "Solve"),
         TextFormField(
-          // keyboardType: TextInputType.number,
+          keyboardType: TextInputType.number,
           controller: sudokuInputController,
           onChanged: (input) {correctedText = input;},
         ),

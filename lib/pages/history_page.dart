@@ -2,6 +2,7 @@ import 'package:app/components/history_element_widget.dart';
 import 'package:app/models/history_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../components/title_area.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,30 +52,26 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
+    //TODO do the things below when adding to history (camera_page) instead of here
     _historyFuture = SharedPreferences.getInstance().then((prefs) {
       return prefs.getStringList('history');
     }).then((historyValue) {
-      print(historyValue);
       //converting history string to list of HistoryElement and storing it in historyElements
       if (historyValue != null) {
         List<HistoryElement> historyElementsValue =
             historyValue.map((e) => HistoryElement.fromJsonString(e)).toList();
         //sorting the list of HistoryElement by date
-        //TODO do the things below when adding to history (camera_page) instead of here
         historyElementsValue.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
         //if history length is greater that 10, then remove the first element
         if (historyElementsValue.length > 10) {
-          debugPrint(historyElementsValue.length.toString());
           historyElementsValue = historyElementsValue.sublist(
               historyElementsValue.length - 10, historyElementsValue.length);
-          debugPrint(historyElementsValue.length.toString());
         }
+        // reverse the list so that the latest history is at the top
+        historyElementsValue = historyElementsValue.reversed.toList();
 
         historyElements = historyElementsValue;
-        print(historyElements);
       }
-      print(historyValue);
       return historyValue;
     });
   }
@@ -135,11 +132,12 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                   );
                 } else {
-                  return const Center(
+                  return Center(
                     child: Text(
                       'No history available.',
-                      style: TextStyle(
+                      style: GoogleFonts.nunito(
                         fontSize: 30,
+                        color: const Color.fromARGB(255, 57, 64, 83),
                       ),
                     ),
                   );
