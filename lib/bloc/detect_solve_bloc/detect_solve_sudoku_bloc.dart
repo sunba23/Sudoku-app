@@ -81,6 +81,8 @@ class DetectSolveSudokuBloc
         body: jsonEncode(requestBody),
       );
 
+      print(response.body.toString());
+
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         String? detectedNumbers = responseBody['sudoku'];
