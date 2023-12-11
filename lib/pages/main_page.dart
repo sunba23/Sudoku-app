@@ -56,11 +56,10 @@ class _MainPageState extends State<MainPage> {
           });
         },
         pagination: const SwiperPagination(
-          builder: DotSwiperPaginationBuilder(
-            color: Colors.transparent,
-            activeColor: Colors.transparent,
-          )
-        ),
+            builder: DotSwiperPaginationBuilder(
+          color: Colors.transparent,
+          activeColor: Colors.transparent,
+        )),
         control: const SwiperControl(
           color: Colors.transparent, //this is scuffed xd, how to pass null?
         ),
@@ -82,7 +81,7 @@ class _MainPageState extends State<MainPage> {
                 children: [
                   ...List.generate(
                     bottomNavs.length,
-                        (index) => GestureDetector(
+                    (index) => GestureDetector(
                       onTap: () {
                         bottomNavs[index].input!.change(true);
                         if (bottomNavs[index] != selectedBottomNav) {
@@ -105,26 +104,27 @@ class _MainPageState extends State<MainPage> {
                             height: 36,
                             width: 36,
                             child: Opacity(
-                              opacity:
-                              bottomNavs[index] == selectedBottomNav ? 1 : 0.5,
+                              opacity: bottomNavs[index] == selectedBottomNav
+                                  ? 1
+                                  : 0.5,
                               child: RiveAnimation.asset(
                                 bottomNavs[index].src,
                                 artboard: bottomNavs[index].artboard,
                                 onInit: (artboard) {
                                   StateMachineController controller =
-                                  RiveUtils.getRiveController(
+                                      RiveUtils.getRiveController(
                                     artboard,
                                     stateMachineName:
-                                    bottomNavs[index].stateMachineName,
+                                        bottomNavs[index].stateMachineName,
                                   );
                                   debugPrint(controller.toString());
 
                                   if (index != 1) {
                                     bottomNavs[index].input =
-                                    controller.findSMI("active") as SMIBool;
+                                        controller.findSMI("active") as SMIBool;
                                   } else {
-                                    bottomNavs[index].input =
-                                    controller.findSMI("isActive") as SMIBool;
+                                    bottomNavs[index].input = controller
+                                        .findSMI("isActive") as SMIBool;
                                   }
                                 },
                               ),
