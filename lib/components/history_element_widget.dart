@@ -15,25 +15,18 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
   DateTime now = DateTime.now();
   String differenceString = '';
 
-  HistoryGridWidget? inputGrid;
-  HistoryGridWidget? outputGrid;
+  List<HistoryGridWidget> previewGrids = [];
+  List<HistoryGridWidget> dialogGrids = [];
   Future<void>? loadGridsFuture;
 
   Future<void> loadGrids() async {
-    inputGrid = HistoryGridWidget(
-      // height: 275,
-      // width: 275,
-      height: 140,
-      width: 140,
-      puzzleString: widget.historyElement.inputSudokuString,
-    );
-    outputGrid = HistoryGridWidget(
-      // height: 275,
-      // width: 275,
-      height: 140,
-      width: 140,
-      puzzleString: widget.historyElement.outputSudokuString,
-    );
+    previewGrids
+      ..add(HistoryGridWidget(height: 140, width: 140, puzzleString: widget.historyElement.inputSudokuString,))
+      ..add(HistoryGridWidget(height: 140, width: 140, puzzleString: widget.historyElement.outputSudokuString,));
+
+    dialogGrids
+      ..add(HistoryGridWidget(height: 260, width: 260, puzzleString: widget.historyElement.inputSudokuString,))
+      ..add(HistoryGridWidget(height: 260, width: 260, puzzleString: widget.historyElement.outputSudokuString,));
   }
 
   @override
@@ -83,20 +76,29 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Sudoku'),
+                title: const Center(child: Text('Sudoku')),
+                titleTextStyle: GoogleFonts.nunito(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                  color: const Color.fromARGB(255, 57, 64, 83),
+                ),
                 content: SizedBox(
                   height: MediaQuery
                       .of(context)
                       .size
-                      .height * 0.7,
+                      .height * 0.65,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.85,
                   child: Column(
                     children: [
-                      inputGrid!,
+                      dialogGrids[0],
                       SizedBox(height: MediaQuery
                           .of(context)
                           .size
                           .height * 0.05,),
-                      outputGrid!,
+                      dialogGrids[1],
                     ],
                   ),
                 ),
@@ -120,29 +122,20 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
                     color: const Color.fromARGB(255, 57, 64, 83),
                   ),
                 ),
+                const SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    inputGrid!,
-                    const SizedBox(height: 10),
-                    outputGrid!,
+                    previewGrids[0],
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Color.fromARGB(255, 57, 64, 83),
+                      size: 20,
+                    ),
+                    previewGrids[1],
                   ]
-                )
-                // Text(
-                //   'input sudoku: ${widget.historyElement.inputSudokuString}',
-                //   style: GoogleFonts.nunito(
-                //     fontWeight: FontWeight.w600,
-                //     color: const Color.fromARGB(255, 57, 64, 83),
-                //   ),
-                // ),
-
-                // Text(
-                //   'solved sudoku: ${widget.historyElement.outputSudokuString}',
-                //   style: GoogleFonts.nunito(
-                //     fontWeight: FontWeight.w600,
-                //     color: const Color.fromARGB(255, 57, 64, 83),
-                //   ),
-                // ),
+                ),
+                const SizedBox(height: 10,),
               ],
             ),
           ),
