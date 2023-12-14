@@ -7,7 +7,8 @@ class SudokuGrid extends StatefulWidget {
   final bool isEditable;
   final ValueChanged<String> onChanged;
 
-  SudokuGrid({
+  const SudokuGrid({
+    super.key,
     required this.height,
     required this.width,
     required this.puzzleString,
@@ -36,11 +37,11 @@ class _SudokuGridState extends State<SudokuGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.height,
       width: widget.width,
       child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 9,
         ),
         itemCount: 81,
@@ -77,13 +78,14 @@ class _SudokuGridState extends State<SudokuGrid> {
               ),
             ),
             child: TextFormField(
+              keyboardType: TextInputType.number,
               initialValue: value != '.' ? value : '',
               enabled: widget.isEditable,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black, // Set the text color to black
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 disabledBorder: InputBorder.none,
               ),

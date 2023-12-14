@@ -130,7 +130,7 @@ class _CameraPageState extends State<CameraPage> {
                     child: GestureDetector(
                       onTap: () {
                         String assetPath =
-                            'lib/assets/recommended_sudokus/5.jpg';
+                            'lib/assets/recommended_sudokus/sudoku123.jpg';
                         BlocProvider.of<DetectSolveSudokuBloc>(context)
                             .add(PreviewEvent(null, assetPath));
                       },
@@ -143,7 +143,7 @@ class _CameraPageState extends State<CameraPage> {
                           ),
                           image: const DecorationImage(
                             image: AssetImage(
-                                'lib/assets/recommended_sudokus/5.jpg'),
+                                'lib/assets/recommended_sudokus/sudoku123.jpg'),
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -345,44 +345,46 @@ class _CameraPageState extends State<CameraPage> {
         TextEditingController(text: detectedSudoku);
     //String correctedText = detectedSudoku;
     print(detectedSudoku.length);
-    return Column(
-      children: [
-        const TitleArea(title: "Solve"),
-        SudokuGrid(
-          width: MediaQuery.of(context).size.width * 0.9,
-          height: MediaQuery.of(context).size.width,
-          puzzleString: detectedSudoku,
-          isEditable: true,
-          onChanged: (newState) {
-            correctedText.value = newState;
-            print("correctedText: ${correctedText.value}");
-          },
-        ),
-        ElevatedButton(
-          onPressed: () {
-            BlocProvider.of<DetectSolveSudokuBloc>(context).add(
-              ClearStateEvent(),
-            );
-          },
-          child: const Text('Close'),
-        ),
-        ValueListenableBuilder<String>(
-          valueListenable: correctedText,
-          builder: (context, value, child) {
-            return ElevatedButton(
-              onPressed: () {
-                print("value: $value");
-                print("value length: ${value.length}");
-
-                BlocProvider.of<DetectSolveSudokuBloc>(context).add(
-                  SolvingEvent(value),
-                );
-              },
-              child: const Text("Solve"),
-            );
-          },
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const TitleArea(title: "Solve"),
+          SudokuGrid(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.width,
+            puzzleString: detectedSudoku,
+            isEditable: true,
+            onChanged: (newState) {
+              correctedText.value = newState;
+              print("correctedText: ${correctedText.value}");
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                ClearStateEvent(),
+              );
+            },
+            child: const Text('Close'),
+          ),
+          ValueListenableBuilder<String>(
+            valueListenable: correctedText,
+            builder: (context, value, child) {
+              return ElevatedButton(
+                onPressed: () {
+                  print("value: $value");
+                  print("value length: ${value.length}");
+      
+                  BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                    SolvingEvent(value),
+                  );
+                },
+                child: const Text("Solve"),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

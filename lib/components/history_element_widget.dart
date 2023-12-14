@@ -1,3 +1,4 @@
+import 'package:app/components/grid_widget.dart';
 import 'package:app/models/history_element.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -56,12 +57,34 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
         widget.onDeleteElement(widget.historyElement);
       },
       child: InkWell(
-        onLongPress: () {
+        onTap: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AlertDialog(
-                title: Text('2 grid widgets go here'),
+              return AlertDialog(
+                title: const Text('Sudoku'),
+                content: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Column(
+                    children: [
+                      SudokuGrid(
+                        height: 275,
+                        width: 275,
+                        puzzleString: widget.historyElement.inputSudokuString,
+                        isEditable: false,
+                        onChanged: (xd) {},
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+                      SudokuGrid(
+                        height: 275,
+                        width: 275,
+                        puzzleString: widget.historyElement.outputSudokuString,
+                        isEditable: false,
+                        onChanged: (xd) {},
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );

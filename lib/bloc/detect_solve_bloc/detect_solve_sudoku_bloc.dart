@@ -29,6 +29,11 @@ class DetectSolveSudokuBloc
       emit(LoadingState());
       String? detectedNumbers =
           await getNumbersFromImage(event.sudokuImage, event.assetPath);
+      if (detectedNumbers != null) {
+        while (detectedNumbers!.length < 81) {
+          detectedNumbers += '.';
+        }
+      }
       detectedNumbers != null
           ? emit(LoadedState(detectedNumbers))
           : emit(const ErrorState(
