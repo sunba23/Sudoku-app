@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'cell_widget.dart';
 
 class SudokuGrid extends StatefulWidget {
   final double height;
@@ -17,7 +18,7 @@ class SudokuGrid extends StatefulWidget {
   });
 
   @override
-  _SudokuGridState createState() => _SudokuGridState();
+  State<SudokuGrid> createState() => _SudokuGridState();
 }
 
 class _SudokuGridState extends State<SudokuGrid> {
@@ -34,6 +35,9 @@ class _SudokuGridState extends State<SudokuGrid> {
           i]; // Overwrite the initial dots with the characters from puzzleString
     }
   }
+
+  final BorderSide _thinBorder = const BorderSide(color: Colors.black, width: 0.5);
+  final BorderSide _thickBorder = const BorderSide(color: Colors.black, width: 2.0);
 
   @override
   Widget build(BuildContext context) {
@@ -58,43 +62,24 @@ class _SudokuGridState extends State<SudokuGrid> {
                   color: Colors.black,
                   width: index < 9
                       ? 0.5
-                      : 0.0, // Add a thin border to the first row
+                      : 0.0,
                 ),
                 left: BorderSide(
                   color: Colors.black,
                   width: index % 9 == 0
                       ? 0.5
-                      : 0.0, // Add a thin border to the first column
+                      : 0.0,
                 ),
-                right: BorderSide(
-                  color: Colors.black,
-                  width:
-                      (index + 1) % 3 == 0 && (index + 1) % 9 != 0 ? 2.0 : 0.5,
-                ),
-                bottom: BorderSide(
-                  color: Colors.black,
-                  width: ((index ~/ 9) + 1) % 3 == 0 && index < 72 ? 2.0 : 0.5,
-                ),
+                right: (index + 1) % 3 == 0 && (index + 1) % 9 != 0 ? _thickBorder : _thinBorder,
+                bottom: ((index ~/ 9) + 1) % 3 == 0 && index < 72 ? _thickBorder : _thinBorder,
               ),
             ),
-            child: TextFormField(
-              keyboardType: TextInputType.number,
+            child: SudokuCell(
               initialValue: value != '.' ? value : '',
-              enabled: widget.isEditable,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black, // Set the text color to black
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                disabledBorder: InputBorder.none,
-              ),
               onChanged: (newValue) {
                 setState(() {
-                  //print(gridState);
                   gridState[index] = newValue;
                   widget.onChanged(gridState.join());
-                  print("Grid state: $gridState");
                 });
               },
             ),
