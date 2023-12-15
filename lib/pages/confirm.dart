@@ -44,7 +44,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         }
       }
     } on AuthException catch (e) {
-      _showError(context, e.message);
+      if (mounted){
+        _showError(context, e.message);
+      }
     }
   }
 
@@ -62,7 +64,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         );
       }
     } on AuthException catch (e) {
-      _showError(context, e.message);
+      if (mounted){
+        _showError(context, e.message);
+      }
     }
   }
 
@@ -87,7 +91,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 20),

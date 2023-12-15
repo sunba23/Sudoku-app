@@ -1,4 +1,5 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 
@@ -16,8 +17,16 @@ class _LoginState extends State<Login> {
   Future<String?> _onLogin(LoginData data) async {
     try {
       try { // if user session is still valid, sign out
-        await Amplify.Auth.getCurrentUser();
-        await Amplify.Auth.signOut();
+        // final user = await Amplify.Auth.getCurrentUser();
+        // await Amplify.Auth.signOut();
+        // final username = user.username;
+        // final password = user.password;
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(
+            '/main_page',
+            arguments: LoginData(name: data.name, password: data.password),
+          );
+        }
       } catch (e) { // there is no user session, so do nothing
         print(e);
       }
@@ -84,7 +93,7 @@ class _LoginState extends State<Login> {
       onSignup: _onSignup,
       onRecoverPassword: (String email) => _onRecoverPassword(context, email),
       theme: LoginTheme(
-        primaryColor: Theme.of(context).primaryColor,
+        primaryColor: Theme.of(context).colorScheme.primary,
       ),
       onSubmitAnimationCompleted: () {
         if (context.mounted) {

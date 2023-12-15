@@ -15,15 +15,16 @@ class HistoryGridWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(width, height),
-      painter: SudokuPainter(puzzleString),
+      painter: SudokuPainter(puzzleString, context),
     );
   }
 }
 
 class SudokuPainter extends CustomPainter {
   final String puzzleString;
+  final BuildContext buildContext;
 
-  SudokuPainter(this.puzzleString);
+  SudokuPainter(this.puzzleString, this.buildContext);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -33,7 +34,7 @@ class SudokuPainter extends CustomPainter {
     );
 
     final paint = Paint()
-      ..color = Colors.black
+      ..color = Theme.of(buildContext).colorScheme.primary
       ..strokeWidth = 1.0;
 
     for (int i = 0; i <= 9; i++) {
@@ -50,7 +51,7 @@ class SudokuPainter extends CustomPainter {
         textPainter.text = TextSpan(
           text: value,
           style: TextStyle(
-            color: Colors.black,
+            color: Theme.of(buildContext).colorScheme.primary,
             fontSize: cellSize / 2,
           ),
         );

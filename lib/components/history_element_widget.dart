@@ -80,7 +80,7 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
                 titleTextStyle: GoogleFonts.nunito(
                   fontWeight: FontWeight.w600,
                   fontSize: 25,
-                  color: const Color.fromARGB(255, 57, 64, 83),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 content: SizedBox(
                   height: MediaQuery
@@ -108,7 +108,7 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: const Color (0xffebebf5),
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
@@ -119,7 +119,7 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
                   differenceString,
                   style: GoogleFonts.nunito(
                     fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(255, 57, 64, 83),
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -127,9 +127,9 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     previewGrids[0],
-                    const Icon(
+                    Icon(
                       Icons.arrow_forward_rounded,
-                      color: Color.fromARGB(255, 57, 64, 83),
+                      color: Theme.of(context).colorScheme.onPrimary,
                       size: 20,
                     ),
                     previewGrids[1],
@@ -154,7 +154,7 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
         } else {
           return Container(
             decoration: BoxDecoration(
-              color: const Color (0xffebebf5),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(15),
             ),
             child: const Center(

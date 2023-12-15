@@ -112,7 +112,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffdfe1ee),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         children: [
           FutureBuilder<List<String>?>(
@@ -137,7 +137,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       'No history available.',
                       style: GoogleFonts.nunito(
                         fontSize: 30,
-                        color: const Color.fromARGB(255, 57, 64, 83),
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   );
@@ -155,7 +155,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [const Color(0xffdfe1ee).withOpacity(0), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee)],
+                  colors: [Theme.of(context).colorScheme.background.withOpacity(0), Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background],
                 ),
               ),
             ),
@@ -170,7 +170,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee), const Color(0xffdfe1ee).withOpacity(0)],
+                  colors: [Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background.withOpacity(0)],
                 ),
               ),
             ),

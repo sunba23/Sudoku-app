@@ -25,7 +25,7 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 225, 238),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: BlocConsumer<DetectSolveSudokuBloc, DetectSolveSudokuState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -71,7 +71,7 @@ class _CameraPageState extends State<CameraPage> {
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.26,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 235, 235, 245),
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
@@ -86,7 +86,7 @@ class _CameraPageState extends State<CameraPage> {
                     style: GoogleFonts.nunito(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: const Color.fromARGB(255, 57, 64, 83),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -98,7 +98,7 @@ class _CameraPageState extends State<CameraPage> {
                     width: MediaQuery.of(context).size.width * 0.35,
                     height: MediaQuery.of(context).size.height * 0.15,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 57, 64, 83),
+                      color: Theme.of(context).colorScheme.tertiary,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: GestureDetector(
@@ -112,7 +112,7 @@ class _CameraPageState extends State<CameraPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: const Color.fromARGB(250, 57, 64, 83),
+                            color: Theme.of(context).colorScheme.primary,
                             width: 2,
                           ),
                           image: const DecorationImage(
@@ -138,7 +138,7 @@ class _CameraPageState extends State<CameraPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: const Color.fromARGB(250, 57, 64, 83),
+                            color: Theme.of(context).colorScheme.primary,
                             width: 2,
                           ),
                           image: const DecorationImage(
@@ -163,7 +163,7 @@ class _CameraPageState extends State<CameraPage> {
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.27,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 235, 235, 245),
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
@@ -180,7 +180,7 @@ class _CameraPageState extends State<CameraPage> {
                     style: GoogleFonts.nunito(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: const Color.fromARGB(255, 57, 64, 83),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -189,7 +189,7 @@ class _CameraPageState extends State<CameraPage> {
                 padding: const EdgeInsets.only(top: 25.0, bottom: 30.0),
                 child: DottedBorder(
                   color:
-                      const Color.fromARGB(255, 57, 64, 83).withOpacity(0.85),
+                    Theme.of(context).colorScheme.primary.withOpacity(0.85),
                   strokeWidth: 2.5,
                   strokeCap: StrokeCap.round,
                   dashPattern: const [25, 20],
@@ -227,7 +227,7 @@ class _CameraPageState extends State<CameraPage> {
                         child: Icon(
                           Icons.add_rounded,
                           size: 50,
-                          color: const Color.fromARGB(255, 57, 64, 83)
+                          color: Theme.of(context).colorScheme.onPrimary
                               .withOpacity(0.85),
                         )),
                   ),
@@ -249,7 +249,7 @@ class _CameraPageState extends State<CameraPage> {
         ),
         Container(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 235, 235, 245),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(15),
             ),
             width: MediaQuery.of(context).size.width * 0.9,
@@ -263,7 +263,7 @@ class _CameraPageState extends State<CameraPage> {
                     style: GoogleFonts.nunito(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: const Color.fromARGB(255, 57, 64, 83),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   const SizedBox(
@@ -274,7 +274,7 @@ class _CameraPageState extends State<CameraPage> {
                     height: MediaQuery.of(context).size.height * 0.35,
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: const Color.fromARGB(255, 57, 64, 83),
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2),
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
@@ -331,7 +331,7 @@ class _CameraPageState extends State<CameraPage> {
               style: GoogleFonts.nunito(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: const Color.fromARGB(255, 57, 64, 83),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -404,7 +404,7 @@ class _CameraPageState extends State<CameraPage> {
               style: GoogleFonts.nunito(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: const Color.fromARGB(255, 57, 64, 83),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -448,7 +448,7 @@ class _CameraPageState extends State<CameraPage> {
                 style: GoogleFonts.nunito(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(255, 57, 64, 83),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
