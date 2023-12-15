@@ -23,7 +23,7 @@ class TitleArea extends StatelessWidget {
             onTap: onTap,
             child: Icon(
               icon,
-              color: const Color.fromARGB(255, 57, 64, 83),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           onTap == null ? const SizedBox(width: 0) : const SizedBox(width: 16),
@@ -31,7 +31,7 @@ class TitleArea extends StatelessWidget {
               style: GoogleFonts.nunito(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
-                color: const Color.fromARGB(255, 57, 64, 83),
+                color: Theme.of(context).colorScheme.primary,
               )),
         ],
       ),

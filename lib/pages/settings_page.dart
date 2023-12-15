@@ -27,9 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
       onPopInvoked: (didPop) {
         goToProfile();
       },
-      child: const Scaffold(
-        backgroundColor: Color.fromARGB(255, 223, 225, 238),
-        body: Column(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: const Column(
           children: [
             TitleArea(title: 'Settings'),
             SizedBox(height: 24),

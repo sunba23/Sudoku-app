@@ -16,7 +16,7 @@ Widget gestureDetectorButton(
       height: 8*vh,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: const Color(0xffebebf5)
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       child: Row(
         children: [
@@ -28,7 +28,7 @@ Widget gestureDetectorButton(
                   child: Icon(
                     icon,
                     size: 25,
-                    color: const Color.fromARGB(255, 57, 64, 83),
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ],
@@ -38,15 +38,14 @@ Widget gestureDetectorButton(
             child: Icon(
               icon,
               size: 25,
-              color: const Color.fromARGB(255, 57, 64, 83),
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
           Text(text,
               style: GoogleFonts.nunito(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
-                // color: const Color(0xffdfe1ee)
-                color: const Color.fromARGB(255, 57, 64, 83),
+                color: Theme.of(context).colorScheme.primary,
               )),
           const Spacer(),
         ],

@@ -36,8 +36,8 @@ class _SudokuGridState extends State<SudokuGrid> {
     }
   }
 
-  final BorderSide _thinBorder = const BorderSide(color: Colors.black, width: 0.5);
-  final BorderSide _thickBorder = const BorderSide(color: Colors.black, width: 2.0);
+  final BorderSide _thinBorder = const BorderSide(color: Colors.black, width: 0.25);
+  final BorderSide _thickBorder = const BorderSide(color: Colors.black, width: 1.0);
 
   @override
   Widget build(BuildContext context) {

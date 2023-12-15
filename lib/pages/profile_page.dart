@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 225, 238),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
           const TitleArea(title: 'Profile'),
@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: const Color(0xffebebf5),
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -119,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
           height: MediaQuery.of(context).size.height * 0.15,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: const Color(0xfff4f4fc),
+            color: Theme.of(context).colorScheme.secondaryContainer,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -140,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: GoogleFonts.nunito(
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
-                              color: const Color.fromARGB(255, 57, 64, 83),
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -148,14 +148,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             padding: const EdgeInsets.fromLTRB(20, 7, 20, 7),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: const Color(0xffebebf5),
+                              color: Theme.of(context).colorScheme.primaryContainer,
                             ),
                             child: Text(
                               userAttributes[2].value,
                               style: GoogleFonts.nunito(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: const Color.fromARGB(255, 57, 64, 83),
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),

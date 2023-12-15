@@ -7,10 +7,12 @@ ThemeData lightTheme = ThemeData(
     secondary: Color (0xff9ca0a9),
 
     primaryContainer: Color (0xffebebf5),
-    secondaryContainer: Color (0xffebebf5),
+    secondaryContainer: Color (0xfff4f4fc),
 
     background: Color (0xffdfe1ee),
 
-    onPrimary: Color (0xff81b4ff)
+    onPrimary: Color (0xff81b4ff),
+
+    tertiary: Color (0xff394053),
   ),
 );

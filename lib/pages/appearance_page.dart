@@ -42,12 +42,12 @@ class _AppearancePageState extends State<AppearancePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           'Dark Mode',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: Color.fromARGB(255, 57, 64, 83),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(width: 16),

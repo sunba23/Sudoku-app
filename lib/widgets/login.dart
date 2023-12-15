@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
       onSignup: _onSignup,
       onRecoverPassword: (String email) => _onRecoverPassword(context, email),
       theme: LoginTheme(
-        primaryColor: Theme.of(context).primaryColor,
+        primaryColor: Theme.of(context).colorScheme.primary,
       ),
       onSubmitAnimationCompleted: () {
         if (context.mounted) {

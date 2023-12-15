@@ -82,9 +82,9 @@ class _MainPageState extends State<MainPage> {
           child: Container(
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 57, 64, 83),
-              borderRadius: BorderRadius.all(Radius.circular(40)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.tertiary,
+              borderRadius: const BorderRadius.all(Radius.circular(40)),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
