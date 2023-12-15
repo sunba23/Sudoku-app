@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "1.12.30"
   another_transformer_page_view:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: another_transformer_page_view
       sha256: a7cd46ede62d621c5abe7e58c7cb2745abe67b3bfec64f59b8889c93d7be7a8e

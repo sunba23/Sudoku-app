@@ -3,6 +3,7 @@ import 'package:app/pages/camera_page.dart';
 import 'package:app/pages/confirm.dart';
 import 'package:app/pages/entry.dart';
 import 'package:app/pages/history_page.dart';
+import 'package:app/pages/login_or_main_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,8 +37,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: const EntryScreen(),
-      home: const MainPage(),
+      home: const LoginOrMainPage(),
+      // home: const MainPage(),
       routes: {
         '/entry': (context) => const EntryScreen(),
         '/main_page': (context) => const MainPage(),

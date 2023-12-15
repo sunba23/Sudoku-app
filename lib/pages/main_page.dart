@@ -1,4 +1,3 @@
-import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:app/utils/rive_utils.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:rive/rive.dart';
@@ -36,12 +35,18 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 223, 225, 238),
       resizeToAvoidBottomInset: false,
       extendBody: true,
       body: Swiper(
+        index: currentIndex,
         controller: _swiperController,
         itemBuilder: (BuildContext context, int index) {
           return pages[index];
