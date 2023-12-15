@@ -1,12 +1,15 @@
+import 'package:app/pages/settings_page.dart';
+import 'package:app/providers/navigation_provider.dart';
 import 'package:app/utils/rive_utils.dart';
-import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
 import '../components/animated_bar.dart';
+import 'appearance_page.dart';
 import 'profile_page.dart';
 import 'history_page.dart';
 import 'camera_page.dart';
-import 'package:flutter/material.dart';
 import 'package:app/models/rive_asset.dart';
 
 class MainPage extends StatefulWidget {
@@ -19,56 +22,60 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   RiveAsset selectedBottomNav = bottomNavs[1];
   int currentIndex = 1;
-  final SwiperController _swiperController = SwiperController();
 
-  List pages = [
+  late NavigationProvider navigationProvider;
+  late PageController _pageController;
+
+  List<Widget> pages = [
     const HistoryPage(),
     CameraPage(),
     const ProfilePage(),
+    const SettingsPage(),
+    const AppearancePage(),
   ];
 
   void onTap(int index) {
-    setState(() {
-      currentIndex = index;
-      selectedBottomNav = bottomNavs[index];
-    });
+    print("ONTAP 1");
+    if ((currentIndex == 3 || currentIndex == 4) && index == 2) {
+      Provider.of<NavigationProvider>(context, listen: false).currentIndex = 2;
+      _pageController.jumpToPage(index);
+    } else {
+      print("index is: $index");
+      print("currentIndex is: $currentIndex");
+      setState(() {
+        currentIndex = index;
+        if (index != 4 && index != 3){
+          selectedBottomNav = bottomNavs[index];
+        }
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: currentIndex);
+    navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.addListener(_onNavigationProviderChange);
+  }
+
+  @override
+  void dispose() {
+    navigationProvider.removeListener(_onNavigationProviderChange);
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onNavigationProviderChange() {
+    _pageController.jumpToPage(navigationProvider.currentIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 225, 238),
+      backgroundColor: Theme.of(context).colorScheme.background,
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: Swiper(
-        index: currentIndex,
-        controller: _swiperController,
-        itemBuilder: (BuildContext context, int index) {
-          return pages[index];
-        },
-        // loop: false, // find a way to use it without the ugly icons
-        itemCount: pages.length,
-        onIndexChanged: (int index) {
-          bottomNavs[index].input!.change(true);
-          onTap(index);
-          Future.delayed(const Duration(seconds: 1), () {
-            bottomNavs[index].input!.change(false);
-          });
-        },
-        pagination: const SwiperPagination(
-            builder: DotSwiperPaginationBuilder(
-          color: Colors.transparent,
-          activeColor: Colors.transparent,
-        )),
-        control: const SwiperControl(
-          color: Colors.transparent, //this is scuffed xd, how to pass null?
-        ),
-      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: SafeArea(
@@ -86,16 +93,15 @@ class _MainPageState extends State<MainPage> {
                 children: [
                   ...List.generate(
                     bottomNavs.length,
-                    (index) => GestureDetector(
+                        (index) => GestureDetector(
                       onTap: () {
+                        print("ONTAP 2");
                         bottomNavs[index].input!.change(true);
-                        if (bottomNavs[index] != selectedBottomNav) {
-                          setState(() {
-                            selectedBottomNav = bottomNavs[index];
-                            onTap(index);
-                          });
-                          _swiperController.move(index);
-                        }
+                        setState(() {
+                          selectedBottomNav = bottomNavs[index];
+                          onTap(index);
+                        });
+                        _pageController.jumpToPage(index);
                         Future.delayed(const Duration(seconds: 1), () {
                           bottomNavs[index].input!.change(false);
                         });
@@ -117,16 +123,16 @@ class _MainPageState extends State<MainPage> {
                                 artboard: bottomNavs[index].artboard,
                                 onInit: (artboard) {
                                   StateMachineController controller =
-                                      RiveUtils.getRiveController(
+                                  RiveUtils.getRiveController(
                                     artboard,
                                     stateMachineName:
-                                        bottomNavs[index].stateMachineName,
+                                    bottomNavs[index].stateMachineName,
                                   );
                                   debugPrint(controller.toString());
 
                                   if (index != 1) {
                                     bottomNavs[index].input =
-                                        controller.findSMI("active") as SMIBool;
+                                    controller.findSMI("active") as SMIBool;
                                   } else {
                                     bottomNavs[index].input = controller
                                         .findSMI("isActive") as SMIBool;
@@ -144,6 +150,26 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
+      ),
+      body: PageView(
+        controller: _pageController,
+        children: pages,
+        //TODO: change drag behavior
+        onPageChanged: (int index) {
+          print("ONPAGECHANGED");
+          print("index is: $index");
+          if ([0, 1, 2].contains(index)) {
+            print("going here1");
+            bottomNavs[index].input!.change(true);
+            onTap(index);
+            Future.delayed(const Duration(seconds: 1), () {
+              bottomNavs[index].input!.change(false);
+            });
+          } else {
+            print("going here2");
+            onTap(index);
+          }
+        },
       ),
     );
   }

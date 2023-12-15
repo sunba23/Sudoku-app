@@ -5,9 +5,13 @@ import 'package:app/pages/entry.dart';
 import 'package:app/pages/history_page.dart';
 import 'package:app/pages/login_or_main_page.dart';
 import 'package:app/pages/main_page.dart';
+import 'package:app/providers/navigation_provider.dart';
+import 'package:app/themes/dark_theme.dart';
+import 'package:app/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:provider/provider.dart';
 import 'helpers/configure_amplify.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -25,7 +29,14 @@ void main() async {
           create: (context) => DetectSolveSudokuBloc(),
         ),
       ],
-      child: const MyApp(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NavigationProvider>(
+            create: (_) => NavigationProvider(),
+          ),
+        ],
+        child: const MyApp(),
+      )
     )
   );
 }
@@ -38,7 +49,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const LoginOrMainPage(),
-      // home: const MainPage(),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       routes: {
         '/entry': (context) => const EntryScreen(),
         '/main_page': (context) => const MainPage(),

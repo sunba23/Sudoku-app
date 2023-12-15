@@ -2,8 +2,10 @@ import 'package:app/components/gesture_detector_button.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../components/title_area.dart';
+import '../providers/navigation_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -80,7 +82,10 @@ class _ProfilePageState extends State<ProfilePage> {
         gestureDetectorButton(
           Icons.settings_rounded,
           'Settings',
-          () {}, //TODO: navigation
+              () {
+                print("clicked appearance");
+                Provider.of<NavigationProvider>(context, listen: false).navigateToSettingsPage();
+          },
           MediaQuery.of(context).size.width/100,
           MediaQuery.of(context).size.height/100,
           context,
@@ -89,7 +94,10 @@ class _ProfilePageState extends State<ProfilePage> {
         gestureDetectorButton(
           Icons.palette_rounded,
           'Appearance',
-          () {}, //TODO: navigation
+              () {
+            print("clicked appearance");
+            Provider.of<NavigationProvider>(context, listen: false).navigateToAppearancePage();
+          },
           MediaQuery.of(context).size.width/100,
           MediaQuery.of(context).size.height/100,
           context,
