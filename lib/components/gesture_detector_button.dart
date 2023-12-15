@@ -42,11 +42,11 @@ Widget gestureDetectorButton(
             ),
           ),
           Text(text,
-              style: GoogleFonts.nunito(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.primary,
-              )),
+            style: GoogleFonts.nunito(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
+            )),
           const Spacer(),
         ],
       ),

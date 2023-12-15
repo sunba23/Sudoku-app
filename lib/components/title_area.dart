@@ -19,13 +19,16 @@ class TitleArea extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 70, 0, 16),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
+          (icon != null) ? Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: GestureDetector(
+              onTap: onTap,
+              child: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
-          ),
+          ) : const SizedBox(width: 30),
           onTap == null ? const SizedBox(width: 0) : const SizedBox(width: 16),
           Text(title,
               style: GoogleFonts.nunito(

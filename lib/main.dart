@@ -6,6 +6,7 @@ import 'package:app/pages/history_page.dart';
 import 'package:app/pages/login_or_main_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/providers/navigation_provider.dart';
+import 'package:app/providers/theme_notifier.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,9 @@ void main() async {
           ChangeNotifierProvider<NavigationProvider>(
             create: (_) => NavigationProvider(),
           ),
+          ChangeNotifierProvider<ThemeNotifier>(
+            create: (_) => ThemeNotifier(),
+          ),
         ],
         child: const MyApp(),
       )
@@ -46,18 +50,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const LoginOrMainPage(),
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      routes: {
-        '/entry': (context) => const EntryScreen(),
-        '/main_page': (context) => const MainPage(),
-        '/history_page': (context) => const HistoryPage(),
-        '/camera_page': (context) => CameraPage(),
-        '/confirm': (context) => ConfirmScreen(data: ModalRoute.of(context)!.settings.arguments as LoginData),
-      },
+    return Consumer<ThemeNotifier>(
+      builder: (context, theme, _) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const LoginOrMainPage(),
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: theme.isDarkMode() ? ThemeMode.dark : ThemeMode.light,
+        routes: {
+          '/entry': (context) => const EntryScreen(),
+          '/main_page': (context) => const MainPage(),
+          '/history_page': (context) => const HistoryPage(),
+          '/camera_page': (context) => CameraPage(),
+          '/confirm': (context) => ConfirmScreen(
+              data: ModalRoute.of(context)!.settings.arguments as LoginData),
+        },
+      ),
     );
   }
 }
