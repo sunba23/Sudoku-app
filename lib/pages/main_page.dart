@@ -13,7 +13,12 @@ import 'camera_page.dart';
 import 'package:app/models/rive_asset.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, this.logoHero, this.titleHero, this.isFromLogin = false});
+
+  final Hero? logoHero;
+  final Hero? titleHero;
+  // final bool isFromLogin;
+  final bool? isFromLogin;
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -26,13 +31,7 @@ class _MainPageState extends State<MainPage> {
   late NavigationProvider navigationProvider;
   late PageController _pageController;
 
-  List<Widget> pages = [
-    const HistoryPage(),
-    CameraPage(),
-    const ProfilePage(),
-    const SettingsPage(),
-    const AppearancePage(),
-  ];
+  List<Widget> pages = [];
 
   void onTap(int index) {
     if ((currentIndex == 3 || currentIndex == 4) && index == 2) {
@@ -54,6 +53,16 @@ class _MainPageState extends State<MainPage> {
     _pageController = PageController(initialPage: currentIndex);
     navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
     navigationProvider.addListener(_onNavigationProviderChange);
+    pages = [
+      const HistoryPage(),
+      CameraPage(
+        logoHero: (widget.isFromLogin ?? false) ? widget.logoHero : null,
+        titleHero: (widget.isFromLogin ?? false) ? widget.titleHero : null,
+      ),
+      const ProfilePage(),
+      const SettingsPage(),
+      const AppearancePage(),
+    ];
   }
 
   @override
@@ -152,15 +161,16 @@ class _MainPageState extends State<MainPage> {
         controller: _pageController,
         children: pages,
         onPageChanged: (int index) {
-          if ([0, 1, 2].contains(index)) {
-            bottomNavs[index].input!.change(true);
-            onTap(index);
-            Future.delayed(const Duration(seconds: 1), () {
-              bottomNavs[index].input!.change(false);
-            });
-          } else {
-            onTap(index);
-          }
+          // if ([0, 1, 2].contains(index)) { //only do the animation if not on settings/appearance
+          //   bottomNavs[index].input!.change(true);
+          //   onTap(index);
+          //   Future.delayed(const Duration(seconds: 1), () {
+          //     bottomNavs[index].input!.change(false);
+          //   });
+          // } else {
+          //   onTap(index);
+          // }
+          onTap(index);
         },
       ),
     );

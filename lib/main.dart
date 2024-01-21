@@ -59,11 +59,19 @@ class MyApp extends StatelessWidget {
         themeMode: theme.isDarkMode() ? ThemeMode.dark : ThemeMode.light,
         routes: {
           '/entry': (context) => const EntryScreen(),
-          '/main_page': (context) => const MainPage(),
+          '/main_page': (context) {
+            final Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return MainPage(
+              logoHero: args['logoHero'] as Hero?,
+              titleHero: args['titleHero'] as Hero?,
+              // isFromLogin: args['isFromLogin'] as bool,
+            );
+          },
           '/history_page': (context) => const HistoryPage(),
           '/camera_page': (context) => CameraPage(),
           '/confirm': (context) => ConfirmScreen(
-              data: ModalRoute.of(context)!.settings.arguments as LoginData),
+              data: ModalRoute.of(context)!.settings.arguments as LoginData,
+          ),
         },
       ),
     );

@@ -7,11 +7,15 @@ class TitleArea extends StatelessWidget {
     required this.title,
     this.icon,
     this.onTap,
+    this.heroOne,
+    this.heroTwo,
   });
 
   final String title;
   final IconData? icon;
   final VoidCallback? onTap;
+  final Hero? heroOne;
+  final Hero? heroTwo;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,8 @@ class TitleArea extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.primary,
               )),
+          if (heroOne != null) heroOne!,
+          if (heroTwo != null) heroTwo!,
         ],
       ),
     );

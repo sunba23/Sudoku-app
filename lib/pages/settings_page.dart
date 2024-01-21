@@ -1,3 +1,5 @@
+import 'package:app/components/gesture_detector_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,14 +29,18 @@ class _SettingsPageState extends State<SettingsPage> {
     await prefs.setString('displayName', _displayNameController.text);
   }
 
-  void _showChangeDisplayNameDialog() {
+  void showChangeDisplayNameDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Change Display Name'),
-        content: TextField(
-          controller: _displayNameController,
-          decoration: const InputDecoration(hintText: 'Enter new display name'),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.width * 0.2,
+          child: TextField(
+            controller: _displayNameController,
+            decoration: const InputDecoration(hintText: 'Enter new display name'),
+          ),
         ),
         actions: [
           ElevatedButton(
@@ -44,18 +50,18 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           ElevatedButton(
-            child: const Text('Change'),
             onPressed: () {
               _changeDisplayName();
               Navigator.of(context).pop();
             },
+            child: const Text('Change'),
           ),
         ],
       ),
     );
   }
 
-  void _shareApp() {
+  void shareApp() {
     final box = context.findRenderObject() as RenderBox?;
     Share.share(
       'Check out this awesome app called Sudoku Solver!',
@@ -66,6 +72,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double vw = MediaQuery.of(context).size.width / 100;
+    double vh = MediaQuery.of(context).size.height / 100;
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -83,14 +92,9 @@ class _SettingsPageState extends State<SettingsPage> {
               icon: Icons.arrow_back_rounded,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _showChangeDisplayNameDialog,
-              child: const Text('Change Display Name'),
-            ),
-            ElevatedButton(
-              onPressed: _shareApp,
-              child: const Text('Share'),
-            ),
+            gestureDetectorButton(CupertinoIcons.pencil_outline, "Change display name", showChangeDisplayNameDialog, vw, vh, context),
+            SizedBox(height: 3 * vh),
+            gestureDetectorButton(Icons.share, "Share app", shareApp, vw, vh, context),
           ],
         ),
       ),

@@ -28,7 +28,7 @@ Widget gestureDetectorButton(
                   child: Icon(
                     icon,
                     size: 25,
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
@@ -38,7 +38,7 @@ Widget gestureDetectorButton(
             child: Icon(
               icon,
               size: 25,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           Text(text,

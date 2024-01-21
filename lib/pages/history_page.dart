@@ -29,7 +29,9 @@ class _HistoryPageState extends State<HistoryPage> {
       children: historyElements.map((historyElementValue) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: HistoryElementWidget(historyElement: historyElementValue, onDeleteElement: deleteHistoryElement),
+          child: HistoryElementWidget(
+              historyElement: historyElementValue,
+              onDeleteElement: deleteHistoryElement),
         );
       }).toList(),
     );
@@ -121,13 +123,18 @@ class _HistoryPageState extends State<HistoryPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else {
-                if (snapshot.hasData && (snapshot.data != null && snapshot.data!.isNotEmpty)) {
+                if (snapshot.hasData &&
+                    (snapshot.data != null && snapshot.data!.isNotEmpty)) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height,
                       child: ListView(
-                        children: [const SizedBox(height: 120), ...getHistoryElementWidgets(), const SizedBox(height: 100),],
+                        children: [
+                          const SizedBox(height: 120),
+                          ...getHistoryElementWidgets(),
+                          const SizedBox(height: 100),
+                        ],
                       ),
                     ),
                   );
@@ -155,7 +162,13 @@ class _HistoryPageState extends State<HistoryPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Theme.of(context).colorScheme.background.withOpacity(0), Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background],
+                  colors: [
+                    Theme.of(context).colorScheme.background.withOpacity(0),
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background
+                  ],
                 ),
               ),
             ),
@@ -170,7 +183,14 @@ class _HistoryPageState extends State<HistoryPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background, Theme.of(context).colorScheme.background.withOpacity(0)],
+                  colors: [
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background.withOpacity(0)
+                  ],
                 ),
               ),
             ),

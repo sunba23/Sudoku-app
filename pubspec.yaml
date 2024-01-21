@@ -34,7 +34,7 @@ dependencies:
   amplify_auth_cognito: ^1.0.0
   amplify_authenticator: ^1.0.0
   amplify_flutter: ^1.0.0
-  flutter_login: ^4.1.1
+  flutter_login: ^4.2.1
   flutter_dotenv: ^5.1.0
   loading_animation_widget:
   flutter_layout_grid: ^2.0.0
@@ -97,6 +97,7 @@ flutter:
     - lib/assets/rive_assets/
     - lib/assets/recommended_sudokus/
     - lib/assets/lottie_assets/
+    - lib/assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
