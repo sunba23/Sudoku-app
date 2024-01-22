@@ -81,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
       MediaQuery.of(context).size.width / 100,
       MediaQuery.of(context).size.height / 100,
       context,
+      Key('signOut'),
     );
   }
 
@@ -97,6 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
           MediaQuery.of(context).size.width / 100,
           MediaQuery.of(context).size.height / 100,
           context,
+          Key('settings'),
         ),
         const SizedBox(height: 24),
         gestureDetectorButton(
@@ -109,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
           MediaQuery.of(context).size.width / 100,
           MediaQuery.of(context).size.height / 100,
           context,
+          Key('appearance'),
         ),
       ],
     );

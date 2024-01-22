@@ -20,7 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void goToProfile() {
     final NavigationProvider navigationProvider =
-    Provider.of<NavigationProvider>(context, listen: false);
+        Provider.of<NavigationProvider>(context, listen: false);
     navigationProvider.currentIndex = 2;
   }
 
@@ -39,7 +39,8 @@ class _SettingsPageState extends State<SettingsPage> {
           height: MediaQuery.of(context).size.width * 0.2,
           child: TextField(
             controller: _displayNameController,
-            decoration: const InputDecoration(hintText: 'Enter new display name'),
+            decoration:
+                const InputDecoration(hintText: 'Enter new display name'),
           ),
         ),
         actions: [
@@ -92,9 +93,17 @@ class _SettingsPageState extends State<SettingsPage> {
               icon: Icons.arrow_back_rounded,
             ),
             const SizedBox(height: 24),
-            gestureDetectorButton(CupertinoIcons.pencil_outline, "Change display name", showChangeDisplayNameDialog, vw, vh, context),
+            gestureDetectorButton(
+                CupertinoIcons.pencil_outline,
+                "Change display name",
+                showChangeDisplayNameDialog,
+                vw,
+                vh,
+                context,
+                Key('changeDisplayName')),
             SizedBox(height: 3 * vh),
-            gestureDetectorButton(Icons.share, "Share app", shareApp, vw, vh, context),
+            gestureDetectorButton(Icons.share, "Share app", shareApp, vw, vh,
+                context, Key('shareApp')),
           ],
         ),
       ),
