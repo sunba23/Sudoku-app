@@ -11,7 +11,10 @@ import 'package:app/components/grid_widget.dart';
 import 'dart:io';
 
 class CameraPage extends StatefulWidget {
-  CameraPage({super.key});
+  CameraPage({super.key, this.logoHero, this.titleHero});
+
+  final Hero? logoHero;
+  final Hero? titleHero;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -62,7 +65,11 @@ class _CameraPageState extends State<CameraPage> {
   Widget _buildInitialUI() {
     return Column(
       children: [
-        const TitleArea(title: "Solve"),
+        TitleArea(
+          title: "Solve",
+          heroOne: widget.logoHero,
+          heroTwo: widget.titleHero,
+        ),
         const SizedBox(
           height: 60.0,
         ),
@@ -218,10 +225,13 @@ class _CameraPageState extends State<CameraPage> {
                           final imagePicker = ImagePicker();
                           final image = await imagePicker.pickImage(
                               source: ImageSource.gallery);
-                          File file = File(image!.path);
-                          if (mounted) {
-                            BlocProvider.of<DetectSolveSudokuBloc>(context)
-                                .add(PreviewEvent(file, null));
+                          bool picked = (image != null) ? true : false;
+                          if (picked) {
+                            File file = File(image.path);
+                            if (mounted) {
+                              BlocProvider.of<DetectSolveSudokuBloc>(context)
+                                  .add(PreviewEvent(file, null));
+                            }
                           }
                         },
                         child: Icon(
@@ -248,65 +258,65 @@ class _CameraPageState extends State<CameraPage> {
           height: 60.0,
         ),
         Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(15),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Text(
+                  'Image preview',
+                  style: GoogleFonts.nunito(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2),
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: sudokuImage != null
+                          ? Image.file(sudokuImage).image
+                          : Image.asset(assetPath!).image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                      DetectingEvent(sudokuImage, assetPath),
+                    );
+                  },
+                  child: const Text('Detect numbers'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<DetectSolveSudokuBloc>(context).add(
+                      ClearStateEvent(),
+                    );
+                  },
+                  child: const Text('Back'),
+                ),
+              ],
             ),
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.6,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Image preview',
-                    style: GoogleFonts.nunito(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                        image: sudokuImage != null
-                            ? Image.file(sudokuImage).image
-                            : Image.asset(assetPath!).image,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<DetectSolveSudokuBloc>(context).add(
-                        DetectingEvent(sudokuImage, assetPath),
-                      );
-                    },
-                    child: const Text('Detect numbers'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<DetectSolveSudokuBloc>(context).add(
-                        ClearStateEvent(),
-                      );
-                    },
-                    child: const Text('Back'),
-                  ),
-                ],
-              ),
-            )),
+          )),
       ],
     );
   }
@@ -318,7 +328,11 @@ class _CameraPageState extends State<CameraPage> {
         const SizedBox(
           height: 60.0,
         ),
-        Lottie.asset('lib/assets/lottie_assets/Animation1.json'),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: Lottie.asset('lib/assets/lottie_assets/Animation1.json'),
+        ),
         const SizedBox(
           height: 20.0,
         ),
@@ -391,7 +405,7 @@ class _CameraPageState extends State<CameraPage> {
   Widget _buildErrorDetectingUI(String message) {
     return Column(
       children: [
-        const TitleArea(title: "Solve"),
+        const TitleArea(title: "Solve",),
         const SizedBox(
           height: 60.0,
         ),
@@ -430,9 +444,8 @@ class _CameraPageState extends State<CameraPage> {
           const SizedBox(
             height: 60.0,
           ),
-          // Lottie.asset('lib/assets/lottie_assets/solveAnimation.json'),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Lottie.asset('lib/assets/lottie_assets/Animation2.json'),
           ),

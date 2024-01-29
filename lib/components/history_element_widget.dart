@@ -1,7 +1,12 @@
 import 'package:app/components/history_grid_widget.dart';
 import 'package:app/models/history_element.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:ui' as ui;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class HistoryElementWidget extends StatefulWidget {
   const HistoryElementWidget({super.key, required this.historyElement, required this.onDeleteElement});
@@ -14,19 +19,20 @@ class HistoryElementWidget extends StatefulWidget {
 class _HistoryElementWidgetState extends State<HistoryElementWidget> {
   DateTime now = DateTime.now();
   String differenceString = '';
+  double opacityLevel = 0.0;
+  final GlobalKey boundaryKey = GlobalKey();
 
   List<HistoryGridWidget> previewGrids = [];
   List<HistoryGridWidget> dialogGrids = [];
-  Future<void>? loadGridsFuture;
 
-  Future<void> loadGrids() async {
+  void setUpGrids() {
     previewGrids
       ..add(HistoryGridWidget(height: 140, width: 140, puzzleString: widget.historyElement.inputSudokuString,))
       ..add(HistoryGridWidget(height: 140, width: 140, puzzleString: widget.historyElement.outputSudokuString,));
 
     dialogGrids
-      ..add(HistoryGridWidget(height: 260, width: 260, puzzleString: widget.historyElement.inputSudokuString,))
-      ..add(HistoryGridWidget(height: 260, width: 260, puzzleString: widget.historyElement.outputSudokuString,));
+      ..add(HistoryGridWidget(height: 280, width: 280, puzzleString: widget.historyElement.inputSudokuString,))
+      ..add(HistoryGridWidget(height: 280, width: 280, puzzleString: widget.historyElement.outputSudokuString,));
   }
 
   @override
@@ -43,12 +49,43 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
     } else {
       differenceString = '${diff.inSeconds} seconds ago';
     }
-    loadGridsFuture = loadGrids();
+    setUpGrids();
+
+    Future.delayed(const Duration(milliseconds: 0), () {
+      setState(() {
+        opacityLevel = 1.0;
+      });
+    });
+  }
+
+  Future<void> shareSolvedSudoku() async {
+    final repaintBoundary = RepaintBoundary(
+      key: boundaryKey,
+      child: SizedBox(
+        height: 140,
+        width: 140,
+        child: HistoryGridWidget(
+          height: 140,
+          width: 140,
+          puzzleString: widget.historyElement.outputSudokuString,
+        ),
+      ),
+    );
+
+    final renderObject = boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final image = await renderObject.toImage(pixelRatio: 2.0);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+    final directory = await getTemporaryDirectory();
+    final file = File('${directory.path}/sudoku.png');
+
+    await file.writeAsBytes(byteData?.buffer.asUint8List() ?? <int>[]);
+
+    await Share.shareXFiles([XFile(file.path)]);
   }
 
   Widget buildWidget(BuildContext context) {
     return Dismissible(
-      // key: Key(widget.historyElement.hashCode.toString()),
       key: UniqueKey(),
       background: Container(
         decoration: BoxDecoration(
@@ -83,22 +120,25 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 content: SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.65,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.85,
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       dialogGrids[0],
                       SizedBox(height: MediaQuery
                           .of(context)
                           .size
-                          .height * 0.05,),
+                          .height * 0.02,),
                       dialogGrids[1],
+                      SizedBox(height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.02,),
+                      ElevatedButton(
+                        onPressed: () {
+                          shareSolvedSudoku();
+                        },
+                        child: const Text('Share'),
+                      ),
                     ],
                   ),
                 ),
@@ -111,32 +151,36 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
             color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(15),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(
-                  differenceString,
-                  style: GoogleFonts.nunito(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    previewGrids[0],
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      size: 20,
+          child: AnimatedOpacity(
+            opacity: opacityLevel,
+            duration: const Duration(seconds: 3),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text(
+                    differenceString,
+                    style: GoogleFonts.nunito(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    previewGrids[1],
-                  ]
-                ),
-                const SizedBox(height: 10,),
-              ],
+                  ),
+                  const SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      previewGrids[0],
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        size: 20,
+                      ),
+                      previewGrids[1],
+                    ]
+                  ),
+                  const SizedBox(height: 10,),
+                ],
+              ),
             ),
           ),
         ),
@@ -146,23 +190,9 @@ class _HistoryElementWidgetState extends State<HistoryElementWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: loadGridsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return buildWidget(context);
-        } else {
-          return Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
+    return RepaintBoundary(
+      key: boundaryKey,
+      child: buildWidget(context),
     );
   }
 }

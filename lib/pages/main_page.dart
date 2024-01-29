@@ -13,7 +13,12 @@ import 'camera_page.dart';
 import 'package:app/models/rive_asset.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, this.logoHero, this.titleHero, this.isFromLogin = false});
+
+  final Hero? logoHero;
+  final Hero? titleHero;
+  // final bool isFromLogin;
+  final bool? isFromLogin;
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -26,22 +31,13 @@ class _MainPageState extends State<MainPage> {
   late NavigationProvider navigationProvider;
   late PageController _pageController;
 
-  List<Widget> pages = [
-    const HistoryPage(),
-    CameraPage(),
-    const ProfilePage(),
-    const SettingsPage(),
-    const AppearancePage(),
-  ];
+  List<Widget> pages = [];
 
   void onTap(int index) {
-    print("ONTAP 1");
     if ((currentIndex == 3 || currentIndex == 4) && index == 2) {
       Provider.of<NavigationProvider>(context, listen: false).currentIndex = 2;
       _pageController.jumpToPage(index);
     } else {
-      print("index is: $index");
-      print("currentIndex is: $currentIndex");
       setState(() {
         currentIndex = index;
         if (index != 4 && index != 3){
@@ -57,6 +53,16 @@ class _MainPageState extends State<MainPage> {
     _pageController = PageController(initialPage: currentIndex);
     navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
     navigationProvider.addListener(_onNavigationProviderChange);
+    pages = [
+      const HistoryPage(),
+      CameraPage(
+        logoHero: (widget.isFromLogin ?? false) ? widget.logoHero : null,
+        titleHero: (widget.isFromLogin ?? false) ? widget.titleHero : null,
+      ),
+      const ProfilePage(),
+      const SettingsPage(),
+      const AppearancePage(),
+    ];
   }
 
   @override
@@ -77,98 +83,94 @@ class _MainPageState extends State<MainPage> {
       resizeToAvoidBottomInset: false,
       extendBody: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: SafeArea(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.tertiary,
-              borderRadius: const BorderRadius.all(Radius.circular(40)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ...List.generate(
-                    bottomNavs.length,
-                        (index) => GestureDetector(
-                      onTap: () {
-                        print("ONTAP 2");
-                        bottomNavs[index].input!.change(true);
-                        setState(() {
-                          selectedBottomNav = bottomNavs[index];
-                          onTap(index);
-                        });
-                        _pageController.jumpToPage(index);
-                        Future.delayed(const Duration(seconds: 1), () {
-                          bottomNavs[index].input!.change(false);
-                        });
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AnimatedBar(
-                              isActive: bottomNavs[index] == selectedBottomNav),
-                          SizedBox(
-                            height: 36,
-                            width: 36,
-                            child: Opacity(
-                              opacity: bottomNavs[index] == selectedBottomNav
-                                  ? 1
-                                  : 0.5,
-                              child: RiveAnimation.asset(
-                                bottomNavs[index].src,
-                                artboard: bottomNavs[index].artboard,
-                                onInit: (artboard) {
-                                  StateMachineController controller =
-                                  RiveUtils.getRiveController(
-                                    artboard,
-                                    stateMachineName:
-                                    bottomNavs[index].stateMachineName,
-                                  );
-                                  debugPrint(controller.toString());
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  borderRadius: const BorderRadius.all(Radius.circular(40)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ...List.generate(
+                        bottomNavs.length,
+                            (index) => GestureDetector(
+                          onTap: () {
+                            bottomNavs[index].input!.change(true);
+                            setState(() {
+                              selectedBottomNav = bottomNavs[index];
+                              onTap(index);
+                            });
+                            _pageController.jumpToPage(index);
 
-                                  if (index != 1) {
-                                    bottomNavs[index].input =
-                                    controller.findSMI("active") as SMIBool;
-                                  } else {
-                                    bottomNavs[index].input = controller
-                                        .findSMI("isActive") as SMIBool;
-                                  }
-                                },
+                            Future.delayed(const Duration(seconds: 1), () {
+                              bottomNavs[index].input!.change(false);
+                            });
+
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedBar(
+                                  isActive: bottomNavs[index] == selectedBottomNav),
+                              SizedBox(
+                                height: 36,
+                                width: 36,
+                                child: Opacity(
+                                  opacity: bottomNavs[index] == selectedBottomNav
+                                      ? 1
+                                      : 0.5,
+                                  child: RiveAnimation.asset(
+                                    bottomNavs[index].src,
+                                    artboard: bottomNavs[index].artboard,
+                                    onInit: (artboard) {
+                                      StateMachineController controller =
+                                      RiveUtils.getRiveController(
+                                        artboard,
+                                        stateMachineName:
+                                        bottomNavs[index].stateMachineName,
+                                      );
+
+                                      if (index != 1) {
+                                        bottomNavs[index].input =
+                                        controller.findSMI("active") as SMIBool;
+                                      } else {
+                                        bottomNavs[index].input = controller
+                                            .findSMI("isActive") as SMIBool;
+                                      }
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
       body: PageView(
         controller: _pageController,
         children: pages,
-        //TODO: change drag behavior
         onPageChanged: (int index) {
-          print("ONPAGECHANGED");
-          print("index is: $index");
-          if ([0, 1, 2].contains(index)) {
-            print("going here1");
-            bottomNavs[index].input!.change(true);
-            onTap(index);
-            Future.delayed(const Duration(seconds: 1), () {
-              bottomNavs[index].input!.change(false);
-            });
-          } else {
-            print("going here2");
-            onTap(index);
-          }
+          // if ([0, 1, 2].contains(index)) { //only do the animation if not on settings/appearance
+          //   bottomNavs[index].input!.change(true);
+          //   onTap(index);
+          //   Future.delayed(const Duration(seconds: 1), () {
+          //     bottomNavs[index].input!.change(false);
+          //   });
+          // } else {
+          //   onTap(index);
+          // }
+          onTap(index);
         },
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/title_area.dart';
 import '../providers/navigation_provider.dart';
@@ -17,11 +18,20 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   List<AuthUserAttribute> userAttributes = [];
   Future<void>? fetchAttributesFuture;
+  String? displayName;
 
   @override
   void initState() {
     super.initState();
     fetchAttributesFuture = fetchAndSetUserAttributes();
+    _loadDisplayName();
+  }
+
+  Future<void> _loadDisplayName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      displayName = prefs.getString('displayName');
+    });
   }
 
   @override
@@ -41,14 +51,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> fetchAndSetUserAttributes() async {
     try {
       final attributes = await Amplify.Auth.fetchUserAttributes();
-      if (mounted){
+      if (mounted) {
         setState(() {
           userAttributes = attributes;
         });
       }
       return;
     } catch (e) {
-      debugPrint( 'Error fetching user attributes: $e' );
+      debugPrint('Error fetching user attributes: $e');
       rethrow;
     }
   }
@@ -60,18 +70,16 @@ class _ProfilePageState extends State<ProfilePage> {
       () async {
         try {
           await Amplify.Auth.signOut();
-          if (mounted){
-            setState(() {
-              userAttributes = [];
-            });
-            Navigator.of(context).pushNamedAndRemoveUntil('/entry', (route) => false);
+          if (mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/entry', (route) => false);
           }
         } on AuthException catch (e) {
           debugPrint(e.message);
         }
       },
-      MediaQuery.of(context).size.width/100,
-      MediaQuery.of(context).size.height/100,
+      MediaQuery.of(context).size.width / 100,
+      MediaQuery.of(context).size.height / 100,
       context,
     );
   }
@@ -82,24 +90,24 @@ class _ProfilePageState extends State<ProfilePage> {
         gestureDetectorButton(
           Icons.settings_rounded,
           'Settings',
-              () {
-                print("clicked appearance");
-                Provider.of<NavigationProvider>(context, listen: false).navigateToSettingsPage();
+          () {
+            Provider.of<NavigationProvider>(context, listen: false)
+                .navigateToSettingsPage();
           },
-          MediaQuery.of(context).size.width/100,
-          MediaQuery.of(context).size.height/100,
+          MediaQuery.of(context).size.width / 100,
+          MediaQuery.of(context).size.height / 100,
           context,
         ),
         const SizedBox(height: 24),
         gestureDetectorButton(
           Icons.palette_rounded,
           'Appearance',
-              () {
-            print("clicked appearance");
-            Provider.of<NavigationProvider>(context, listen: false).navigateToAppearancePage();
+          () {
+            Provider.of<NavigationProvider>(context, listen: false)
+                .navigateToAppearancePage();
           },
-          MediaQuery.of(context).size.width/100,
-          MediaQuery.of(context).size.height/100,
+          MediaQuery.of(context).size.width / 100,
+          MediaQuery.of(context).size.height / 100,
           context,
         ),
       ],
@@ -108,68 +116,75 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget buildMainProfileArea() {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Theme.of(context).colorScheme.primaryContainer,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.78,
-          height: MediaQuery.of(context).size.height * 0.15,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Theme.of(context).colorScheme.secondaryContainer,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FutureBuilder(
-                future: fetchAttributesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    if (snapshot.error != null) {
-                      return const Text('An error occurred retrieving user attributes');
-                    } else {
-                      return Column (
-                        children: [
-                          Text(
-                            userAttributes[2].value, //TODO: use username
-                            style: GoogleFonts.nunito(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(20, 7, 20, 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                            ),
-                            child: Text(
-                              userAttributes[2].value,
-                              style: GoogleFonts.nunito(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                  }
-                }
-              ),
-            ],
-          )
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).colorScheme.primaryContainer,
         ),
-      )
-    );
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+              width: MediaQuery.of(context).size.width * 0.78,
+              height: MediaQuery.of(context).size.height * 0.15,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Theme.of(context).colorScheme.secondaryContainer,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FutureBuilder(
+                      future: fetchAttributesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          if (snapshot.error != null) {
+                            return const Text(
+                                'An error occurred retrieving user attributes');
+                          } else {
+                            return Column(
+                              children: [
+                                Text(
+                                  displayName ??
+                                      userAttributes[2]
+                                          .value, // use display name if it's not null, otherwise use email
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 7, 20, 7),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                  ),
+                                  child: Text(
+                                    userAttributes[2].value,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        }
+                      }),
+                ],
+              )),
+        ));
   }
 
   Widget buildProfileUI(List<AuthUserAttribute> userAttributes) {
