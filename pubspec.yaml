@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
 
+
   amplify_api: ^1.0.0
   amplify_analytics_pinpoint: ^1.4.1
   amplify_auth_cognito: ^1.0.0
@@ -66,6 +67,7 @@ dependencies:
   mockito: ^5.4.4
 
 dev_dependencies:
+  build_runner: ^2.1.4
   flutter_test:
     sdk: flutter
 

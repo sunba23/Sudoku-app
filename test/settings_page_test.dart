@@ -2,13 +2,22 @@ import 'package:app/providers/navigation_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:app/pages/settings_page.dart';
 import 'package:provider/provider.dart';
 import 'package:app/components/gesture_detector_button.dart';
+import 'settings_page_test.mocks.dart';
+import 'test/settings_page_test.mocks.dart';
+
 
 // Create a MockNavigator class
 class MockNavigator extends Mock implements NavigatorObserver {}
+
+
+
+
+
 
 class MockNavigationProvider extends Mock implements NavigationProvider {
   showChangeDisplayNameDialog() {}
@@ -22,10 +31,13 @@ class MockNavigationProvider extends Mock implements NavigationProvider {
 
 class MockRoute<T> extends Mock implements Route<T> {}
 
+@GenerateMocks([SettingsPage])
 void main() {
+  final settingsPageMock = MockSettingsPage();
   BuildContext? mainContext;
   MockNavigator? mockNavigator;
   MockRoute? mockRoute;
+  
 
   setUp(() {
     mockNavigator = MockNavigator();
@@ -78,4 +90,10 @@ void main() {
     // Verify that shareApp was called
     verify(mockNavigationProvider.shareApp()).called(1);
   });
+
+
+
+
+ 
+
 }
