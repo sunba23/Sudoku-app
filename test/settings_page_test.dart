@@ -31,7 +31,7 @@ void main() {
     await tester.pumpWidget(
       ChangeNotifierProvider<NavigationProvider>(
         create: (_) => mockNavigationProvider,
-        child: MaterialApp(
+        child: const MaterialApp(
           home: SettingsPage(),
         ),
       ),
@@ -54,7 +54,7 @@ void main() {
       await tester.pumpWidget(
         ChangeNotifierProvider<NavigationProvider>(
           create: (_) => mockNavigationProvider,
-          child: MaterialApp(
+          child: const MaterialApp(
             home: SettingsPage(),
           ),
         ),
@@ -72,7 +72,7 @@ void main() {
   testWidgets('shareApp is called when Share app button is tapped',
       (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: SettingsPage(),
       ),
     );

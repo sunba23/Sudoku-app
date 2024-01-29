@@ -26,7 +26,17 @@ class HistoryElement {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'subtitle': subtitle,
+      'inputSudokuString': inputSudokuString,
+      'outputSudokuString': outputSudokuString,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+
   String toJsonString() {
-    return '{"title": "$title", "subtitle": "$subtitle", "inputSudokuString": "$inputSudokuString", "outputSudokuString": "$outputSudokuString", "timestamp": "${timestamp.toIso8601String()}"}';
+    return jsonEncode(toJson());
   }
 }
